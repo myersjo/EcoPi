@@ -1,22 +1,19 @@
-The two scripts in this directory use two slightly different methods to find the bacteria in the 
-image. Images are sourced from "testImages" and exported to "outputImages".
-
-kmDetectEcoli.py
-
-    -The Kmeans algorith is first applied. This reduces the amount of colours allowed in the image
-    to less than or equal to 2
+Images are sourced from testImages, and outputted to outputImages
     
     -The image is converted to grey scale and it is thresholded, i.e binarised
+
+    -The following steps are applied to both an eroded, and normal binary image produced from the 
+    above step
 
     -A number of contours are then located in the image. Contours are regions in the image which are
     connected to one another and share the same colour
 
-    -The image is then eroded. This simply removes noise from the image by removing small connected 
-    components, while expanding bigger ones
+    -We are trying to find a circular contour which represents the base of the petri dish, with a 
+    number of child contours (bacteria)
+        
+        -This is done by getting the contour with the largest amount of child contours
 
-ccDetectEcoli.py
-
-    Does the same as above, minus the kmeans step
+    -These child contours are drawn onto an image, which can be found in output Images
 
 
 Stats that I have thought up of so far that can be obtained.
