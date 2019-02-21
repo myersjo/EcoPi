@@ -1,25 +1,35 @@
 {
-    "timestamp": "20190217145835",
+    "incubation_id": 123,
+    "incuation_start_time": 20190216145835,
+    "incubation_end_time": -1,
     "position": "Position in incubator - needed when multiple dishes are in incubator",
-    "incubator_state": {
-        "temperature": 10,
-        "incuation_start_time": 20190216145835,
-        "incubation_end_time": -1
-    },
-    "image_analysis": {
-        "number_regions": 10,
-        "regions": [
-            {
-                "Contour ID": 51,
-                "Perimeter": 873.9625465869904,
-                "Area": 10.0,
-                "Solidity": 1.0,
-                "Circularity": 0.00016452209120090635,
-                "Mean Color (Greyscale)": 77.125,
-                "Line Segments": 1
+    "snapshots": [
+        {
+            "timestamp": "20190217145835",
+            
+            "incubator_state": {
+                "temperature": 10,
+                "humidty": "", 
+                
+            },
+            "image_analysis": {
+                "number_regions": 10,
+                "regions": [
+                    {
+                        "Contour ID": 51,
+                        "Perimeter": 873.9625465869904,
+                        "Area": 10.0,
+                        "Solidity": 1.0,
+                        "Circularity": 0.00016452209120090635,
+                        "Mean Color (Greyscale)": 77.125,
+                        "Line Segments": 1
+                    }
+                ]
             }
-        ]
-    },
+            
+        }
+    ],
+    "notes": "Notes per snapshot or per incubation??",
     "data_analysis": {
         "estimated_completion_time": 20190217145835
     }
