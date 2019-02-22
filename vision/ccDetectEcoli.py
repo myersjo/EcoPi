@@ -2,7 +2,9 @@ import numpy as np
 import cv2 as cv
 import json
 import math
+import time
 
+start=time.time()
 testImageFolder = "../testImages/"
 outputImageFolder = "../outputImages/"
 
@@ -68,3 +70,5 @@ for i in range(len(maxChildList)):
     cv.drawContours(connectComponentsImg, contours, maxChildList[i], (0, 255, 0), -1)
 
 cv.imwrite(outputImageFolder + "detectedBacteria.png", connectComponentsImg)
+end=time.time()
+print(end-start)
