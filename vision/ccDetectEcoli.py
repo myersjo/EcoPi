@@ -3,10 +3,14 @@ import cv2 as cv
 import json
 import math
 import time
-
+import sys
+if not len(sys.argv)==3:
+    print("Invalid Number of arguments")
+    print("Usage python <script> <Test Image Directory> <Output Image Folder>")
+    sys.exit(-1)
 start=time.time()
-testImageFolder = "../testImages/"
-outputImageFolder = "../outputImages/"
+testImageFolder = sys.argv[1]
+outputImageFolder = sys.argv[2]
 
 img = cv.imread(testImageFolder + "petriDish.png")
 
