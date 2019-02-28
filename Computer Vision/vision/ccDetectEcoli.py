@@ -6,7 +6,7 @@ import time
 import sys
 if not len(sys.argv)==2:
     print("Invalid Number of arguments")
-    print("Usage python <script> <image>")
+    print("Usage python <script> <image> ")
     sys.exit(-1)
 
 start=time.time()
@@ -25,6 +25,7 @@ q4=img[half_h+1:h, half_w+1:w]
 imgList=[q1, q2, q4, q4]
 
 imgNum=0
+jsonDict={}
 for img in imgList:
     
     greyImg = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -38,7 +39,7 @@ for img in imgList:
     maxContourIndex = 0
     i = 0
     maxChildList = []
-    jsonDict = []
+    jsonList = []
     # The contour with the most children is likely to be circle containing the bacteria
     # This loop finds this contour, and creates a list of the indices of these child contours (bacteria)
 
@@ -62,6 +63,7 @@ for img in imgList:
             mean = cv.mean(greyImg, mask=mask)[0]
 
             values = {
+               
                 "Contour ID": int(nextContour),
                 "Perimeter": float(perimeter),
                 "Area": float(area),
@@ -77,16 +79,17 @@ for img in imgList:
         if len(innerIndexes) > len(maxChildList):
             maxChildList = innerIndexes
 
-            jsonDict = contourVals
+            jsonList = contourVals
 
         i += 1
-    with open("results.json", "w+") as file:
-        json.dump(jsonDict, file)
+        jsonDict[int(imgNum)]= jsonList
     # Drawing only the child bacteria
     for i in range(len(maxChildList)):
         cv.drawContours(connectComponentsImg, contours, maxChildList[i], (0, 255, 0), -1)
 
     cv.imwrite("detectedBacteria"+str(imgNum)+".png", connectComponentsImg)
     imgNum+=1
+with open("results.json", "w+") as file:
+        json.dump(jsonDict, file)
 end=time.time()
 print(end-start)
