@@ -23,8 +23,10 @@ q2=img[0:half_h, half_w+1:w]
 q3=img[half_h+1:h, 0:half_w]
 q4=img[half_h+1:h, half_w+1:w]
 imgList=[q1, q2, q4, q4]
-
+#####temp batch id#######
+batch_id=0
 imgNum=0
+contourDict={}
 jsonDict={}
 for img in imgList:
     
@@ -42,13 +44,16 @@ for img in imgList:
     jsonList = []
     # The contour with the most children is likely to be circle containing the bacteria
     # This loop finds this contour, and creates a list of the indices of these child contours (bacteria)
-
+    contourArea=0
+    nonContourArea=0
     for contour in contours:
         nextContour = hierarchy[0][i][2]
         parent = i
         innerIndexes = []
 
         contourVals = []
+        totalContourArea=0
+        totalNonContourArea=cv.contourArea(contour)
         while nextContour > -1 and parent == i:
             innerIndexes.append(nextContour)
             perimeter = cv.arcLength(contour, True)
@@ -61,7 +66,7 @@ for img in imgList:
             approx = cv.approxPolyDP(contour, epsilon, True)
             cv.drawContours(mask, contours, nextContour, 255, -1)
             mean = cv.mean(greyImg, mask=mask)[0]
-
+            totalContourArea+=area
             values = {
                
                 "Contour ID": int(nextContour),
@@ -80,9 +85,15 @@ for img in imgList:
             maxChildList = innerIndexes
 
             jsonList = contourVals
+            contourArea=totalContourArea
+            
+            nonContourArea=totalNonContourArea
 
         i += 1
-        jsonDict[int(imgNum)]= jsonList
+    
+    contourDict[imgNum]={}
+    contourDict[imgNum]["BacteriaPercentage"]=float((100/nonContourArea)*contourArea)
+    contourDict[imgNum]["ContourValues"]= jsonList
     # Drawing only the child bacteria
     for i in range(len(maxChildList)):
         cv.drawContours(connectComponentsImg, contours, maxChildList[i], (0, 255, 0), -1)
@@ -90,6 +101,10 @@ for img in imgList:
     cv.imwrite("detectedBacteria"+str(imgNum)+".png", connectComponentsImg)
     imgNum+=1
 with open("results.json", "w+") as file:
+        jsonDict[batch_id]={}
+        jsonDict["dateTaken"]=start
+        jsonDict[batch_id]["Dishes"]=contourDict
+        
         json.dump(jsonDict, file)
 end=time.time()
 print(end-start)
