@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from '../../logo.svg';
 import './App.scss';
+
+//Testing material UI
+import Button from '@material-ui/core/Button';
 
 class App extends Component {
   render() {
@@ -11,14 +14,10 @@ class App extends Component {
           <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          {/* Testing material UI button */}
+          <Button variant="contained" color="primary">
+            Primary
+          </Button>
         </header>
       </div>
     );
