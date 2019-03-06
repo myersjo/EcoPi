@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <div className="App">
         <Dashboard>
-          <p>Hello World!</p>
+          <p style={{ color: 'white' }}>Hello World!</p>
         </Dashboard>
       </div>
     );
