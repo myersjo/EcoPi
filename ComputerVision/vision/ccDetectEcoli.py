@@ -73,7 +73,7 @@ def countBacteria(img, jsonData):
     for i in range(len(maxChildList)):
         cv.drawContours(connectComponentsImg, contours, maxChildList[i], (0, 255, 0), -1)
 
-    cv.imwrite("detectedBacteria"+str(batch_id)+".png", connectComponentsImg)
+    #cv.imwrite("detectedBacteria"+str(batch_id)+".png", connectComponentsImg)
     
     snapshots.append(newSnapshot)
     jsonData["snapshots"]=snapshots
