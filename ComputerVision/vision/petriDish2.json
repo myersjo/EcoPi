@@ -1,0 +1,11 @@
+{
+    "incubation_id":0, 
+    "incubation_start_time": 3423423423,
+    "incubation_end_time": -1,
+    "position": 2,
+    "snapshots":[],
+    "notes": "Notes per snapshot or per incubation",
+    "data_analysis": {
+        "estimated_completion_time":229348293
+    }
+}
