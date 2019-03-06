@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import './App.scss';
+import Dashboard from '../dashboard/Dashboard.jsx';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        <Dashboard>
           <p>Hello World!</p>
-        </header>
+        </Dashboard>
       </div>
     );
   }

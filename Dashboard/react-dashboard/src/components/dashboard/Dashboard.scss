@@ -1,0 +1,11 @@
+@import './../../styles/theme/_colours.scss';
+
+.Dashboard {
+  width: 80vw;
+  height: 80vh;
+  margin: auto;
+  margin-top: 5em;
+  border-radius: 0.5em;
+  background: $dark-blue2;
+  opacity: 0.5;
+}
