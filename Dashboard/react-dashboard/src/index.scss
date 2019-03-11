@@ -12,8 +12,9 @@ body {
   // todo: tidy up
   width: 100vw;
   height: 100vh;
-  background: radial-gradient(ellipse at top left, #746b8a, #403e56);
+  background: radial-gradient(circle at top left, #746b8a, #403e56);
   overflow: hidden;
+  color: $white;
 }
 
 code {

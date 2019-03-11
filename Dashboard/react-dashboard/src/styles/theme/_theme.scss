@@ -1,0 +1,48 @@
+@import './partials/typography.scss';
+@import './partials/colours.scss';
+
+%digit {
+  font-family: $ff-ss;
+  font-weight: $fw-light;
+  color: $white;
+  display: block;
+}
+
+%large-digit {
+  @extend %digit;
+  font-size: 45px;
+}
+
+%medium-digit {
+  @extend %digit;
+  font-size: 21px;
+  margin-bottom: 0.2em;
+}
+
+%small-digit {
+  @extend %digit;
+  font-size: 15px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+%tile-text {
+  font-family: $ff-ss;
+  font-weight: $fw-bold;
+  color: $dark-blue2;
+}
+
+%tile-heading {
+  @extend %tile-text;
+  font-size: 16px;
+  text-transform: uppercase;
+  text-align: left;
+  line-height: 0;
+  margin-bottom: 2em;
+}
+
+%tile-label {
+  @extend %tile-text;
+  font-size: 12px;
+  text-transform: uppercase;
+}

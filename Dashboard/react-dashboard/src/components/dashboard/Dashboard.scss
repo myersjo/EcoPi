@@ -1,4 +1,4 @@
-@import './../../styles/theme/_colours.scss';
+@import './../../styles/theme/theme.scss';
 
 .Dashboard {
   width: 80vw;
@@ -11,6 +11,11 @@
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+
   border-radius: 0.5em;
   background: rgba(49, 55, 67, 0.6); //No variable as color used once
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
 }
