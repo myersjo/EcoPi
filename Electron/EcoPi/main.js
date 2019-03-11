@@ -1,14 +1,10 @@
-import { app, BrowserWindow } from 'electron';
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { enableLiveReload } from 'electron-compile';
+const {app, BrowserWindow} = require('electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
-
-if (isDevMode) enableLiveReload({ strategy: 'react-hmr' });
 
 const createWindow = async () => {
 
@@ -17,18 +13,22 @@ const createWindow = async () => {
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1366,
-    height: 768,
+    width: 1920,
+    height: 1080,
     fullscreenable: true,
-    resizeable: true
+    resizeable: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/src/index.html`);
+  // mainWindow.loadURL(`file://${__dirname}/src/index.html`);
+  mainWindow.loadURL('http://localhost:3000/')  
 
   // Open the DevTools.
   if (isDevMode) {
-    await installExtension(REACT_DEVELOPER_TOOLS);
+    // await installExtension(REACT_DEVELOPER_TOOLS);
     mainWindow.webContents.openDevTools();
   }
 
