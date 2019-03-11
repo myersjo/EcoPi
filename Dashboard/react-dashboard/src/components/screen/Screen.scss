@@ -1,12 +1,11 @@
 @import './../../styles/theme/_theme.scss';
 
 .Screen {
-  // background-color: red;
-  // width: 100%;
-  // height: 100%;
+  box-sizing: border-box;
+  height: 85vh;
 
-  grid-column: 2/5;
-  grid-row-start: 1;
+  // grid-column: 2/5;
+  // grid-row-start: 1; Moved this to slideable container
 
   padding: 2em;
 

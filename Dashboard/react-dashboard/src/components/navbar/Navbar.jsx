@@ -12,15 +12,12 @@ import Reports from './../../assets/nav-icons/reports.svg';
 import Upload from './../../assets/nav-icons/upload.svg';
 
 class Navbar extends Component {
-  state = { activeIndex: 0 };
-
-  handleChange = (_, activeIndex) => this.setState({ activeIndex });
   render() {
-    const { activeIndex } = this.state;
+    const { activeIndex, handleSlideChange } = this.props;
 
     return (
       <div className="Navbar">
-        <VerticalTabs value={activeIndex} onChange={this.handleChange}>
+        <VerticalTabs value={activeIndex} onChange={handleSlideChange}>
           <VerticalTab
             icon={<img className="nav-icon" src={Home} alt="Home" />}
             label="Home"
