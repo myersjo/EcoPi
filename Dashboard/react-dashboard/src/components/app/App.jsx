@@ -3,11 +3,14 @@ import './App.scss';
 import Dashboard from '../dashboard/Dashboard.jsx';
 import Navbar from '../navbar/Navbar.jsx';
 import Screen from '../screen/Screen.jsx';
-import Tile from '../tile/Tile.jsx';
+import Tile from '../Tile/Tile.jsx';
+import Uploadimg from '../uploadimg/Uploadimg.jsx';
 import Divider from '@material-ui/core/Divider';
 import SwipeableViews from 'react-swipeable-views';
 //Temporary graph images
 import TimerSvg from './../../assets/placeholder-graphs/timer.svg';
+import ImageUploader from 'react-images-upload';
+
 
 class App extends Component {
   state = {
@@ -88,7 +91,7 @@ class App extends Component {
                 <h1 className="tile-heading">Metadata:</h1>
               </Tile>
             </Screen>
-            <Screen>Screen 2</Screen>
+            <Screen><Tile style={{ gridRow: '1/2' }}><Uploadimg></Uploadimg></Tile></Screen>
             <Screen>Screen 3</Screen>
             <Screen>Screen 4</Screen>
             <Screen>Screen 5</Screen>

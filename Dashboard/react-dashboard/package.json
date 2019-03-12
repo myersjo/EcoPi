@@ -7,6 +7,7 @@
     "react": "^16.8.3",
     "react-countdown-now": "^2.1.0",
     "react-dom": "^16.8.3",
+    "react-images-upload": "^1.2.6",
     "react-scripts": "2.1.5",
     "react-swipeable-views": "^0.13.1"
   },
