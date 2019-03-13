@@ -1,0 +1,59 @@
+@import './../../styles/theme/_theme.scss';
+
+.Screen {
+  box-sizing: border-box;
+  height: 85vh;
+
+  // grid-column: 2/5;
+  // grid-row-start: 1; Moved this to slideable container
+
+  padding: 2em;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-gap: 1.5em;
+}
+
+.large-digit {
+  @extend %large-digit;
+}
+
+.medium-digit {
+  @extend %medium-digit;
+}
+
+.small-digit {
+  @extend %small-digit;
+}
+
+.tile-heading {
+  @extend %tile-heading;
+}
+
+.tile-label {
+  @extend %tile-label;
+}
+
+.active-heading {
+  color: $accent-aqua;
+}
+
+.divider {
+  height: 1px;
+  margin-top: 2em;
+  margin-bottom: 0;
+  background-color: rgba($dark-blue2, 0.5);
+  border: 0 none;
+}
+
+.time-and-date {
+  text-align: left;
+  padding: 0.3em;
+  padding-left: 0.9em;
+
+  &:first-of-type {
+    border-right: 1px solid rgba($dark-blue2, 0.5);
+    padding-left: 0;
+  }
+}

@@ -5,10 +5,9 @@ import Countdown from 'react-countdown-now';
 import './Tile.scss';
 
 class Tile extends Component {
-
   render() {
-  //timer in progress  
-  /*  const Completionist = () => <span>You are good to go!</span>;
+    //timer in progress
+    /*  const Completionist = () => <span>You are good to go!</span>;
 
     ReactDOM.render(
       (
@@ -18,7 +17,11 @@ class Tile extends Component {
       ),
       document.getElementById('root')
     ); */
-    return <div className="Tile">{this.props.children}</div>;
+    return (
+      <div style={this.props.style} className="Tile">
+        {this.props.children}
+      </div>
+    );
   }
 }
 

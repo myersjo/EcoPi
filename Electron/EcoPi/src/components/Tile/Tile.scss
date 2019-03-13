@@ -1,16 +1,8 @@
-@import './../../styles/theme/_colours.scss';
+@import './../../styles/theme/theme.scss';
 
 .Tile {
-  width: 20vw;
-  height: 40vh;
-  margin: auto;
-
-  //Center vertically
-  position: absolute;
-  top: 40%;
-  left: 40%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  border-radius: 0.5em;
-  background: rgba(49, 55, 67, 0.6); //No variable as color used once
+  background: rgba($dark-blue1, 0.5);
+  box-shadow: 0px 5px 8px 1px rgba(black, 0.1);
+  padding: 1.5em;
+  text-align: center;
 }
