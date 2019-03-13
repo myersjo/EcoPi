@@ -11,7 +11,7 @@ import SwipeableViews from 'react-swipeable-views';
 import TimerSvg from './../../assets/placeholder-graphs/timer.svg';
 import ImageUploader from 'react-images-upload';
 
-const API = 'localhost:3030/api/v1.0/snapshot/';
+const API = 'http://localhost:3030/api/v1.0/snapshot/';
 
 class App extends Component {
   state = {
@@ -22,7 +22,8 @@ class App extends Component {
   componentDidMount() {
     fetch(API)
       .then(response => response.json())
-      .then(data => this.setState({ data }));
+      .then(data => this.setState({ data }))
+      .error(err => console.log(err));
 
     console.log('Fetched data.');
   }
