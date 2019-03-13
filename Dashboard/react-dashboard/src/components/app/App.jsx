@@ -11,11 +11,21 @@ import SwipeableViews from 'react-swipeable-views';
 import TimerSvg from './../../assets/placeholder-graphs/timer.svg';
 import ImageUploader from 'react-images-upload';
 
+const API = 'localhost:3030/api/v1.0/snapshot/';
 
 class App extends Component {
   state = {
-    slideNum: 0
+    slideNum: 0,
+    data: {}
   };
+
+  componentDidMount() {
+    fetch(API)
+      .then(response => response.json())
+      .then(data => this.setState({ data }));
+
+    console.log('Fetched data.');
+  }
 
   handleSlideChange = (_, slideNum) => {
     this.setState({ slideNum });
@@ -91,7 +101,11 @@ class App extends Component {
                 <h1 className="tile-heading">Metadata:</h1>
               </Tile>
             </Screen>
-            <Screen><Tile style={{ gridRow: '1/2' }}><Uploadimg></Uploadimg></Tile></Screen>
+            <Screen>
+              <Tile style={{ gridRow: '1/2' }}>
+                <Uploadimg />
+              </Tile>
+            </Screen>
             <Screen>Screen 3</Screen>
             <Screen>Screen 4</Screen>
             <Screen>Screen 5</Screen>
