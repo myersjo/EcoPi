@@ -7,8 +7,14 @@ import Tile from '../Tile/Tile.jsx';
 import Uploadimg from '../uploadimg/Uploadimg.jsx';
 import Divider from '@material-ui/core/Divider';
 import SwipeableViews from 'react-swipeable-views';
+
+//Screen imports
+import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
+
 //Temporary graph images
 import TimerSvg from './../../assets/placeholder-graphs/timer.svg';
+
+
 import ImageUploader from 'react-images-upload';
 
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
@@ -20,12 +26,15 @@ class App extends Component {
   };
 
   componentDidMount() {
-    fetch(API)
-      .then(response => response.json())
-      .then(data => this.setState({ data }))
-      .error(err => console.log(err));
-
-    console.log('Fetched data.');
+    fetch(API, {
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => this.setState({ data }))
+    .catch(err => console.log(err));
+    console.log('Fetched data from API.');
   }
 
   handleSlideChange = (_, slideNum) => {
@@ -107,7 +116,7 @@ class App extends Component {
                 <Uploadimg />
               </Tile>
             </Screen>
-            <Screen>Screen 3</Screen>
+            <LivestreamScreen/>
             <Screen>Screen 4</Screen>
             <Screen>Screen 5</Screen>
           </SwipeableViews>

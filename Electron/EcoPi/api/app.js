@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const fs = require('fs')
+const cors = require('cors');
 
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json()
@@ -13,12 +14,21 @@ const tmpFileName = 'snapshot.json'
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
+//enables cors
+app.use(cors({
+  'allowedHeaders': ['sessionId', 'Content-Type'],
+  'exposedHeaders': ['sessionId'],
+  'origin': '*',
+  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  'preflightContinue': false
+}));
+
 // Accepts post request with JSON body containing data of a single snapshot (
 //  state of a dish and its environment at a specific point in time)
 app.post(apiPrefix + apiVersion + '/snapshot', jsonParser, function (req, res) {
   if (!req.body)
     return res.sendStatus(400);
-  
+
   console.log(req.body);
 
   fs.writeFile(tmpFileName, JSON.stringify(req.body), function (err) {
@@ -26,14 +36,15 @@ app.post(apiPrefix + apiVersion + '/snapshot', jsonParser, function (req, res) {
       return res.sendStatus(500);
     console.log('Saved!');
   });
-  
+
   return res.sendStatus(200);
 });
 
 // Returns the last received snapshot
 app.get(apiPrefix + apiVersion + '/snapshot', function (req, res) {
   fs.readFile(tmpFileName, function (err, data) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.writeHead(200, {'Content-Type': 'application/json',
+                        'Access-Control-Allow-Headers': 'Content-Type'});
     res.write(data);
     res.end();
   });
