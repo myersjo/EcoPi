@@ -60,7 +60,7 @@ def countBacteria(img, jsonData):
     retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     connectComponentsImg = img.copy()
-    contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    sd, contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     maxChildList = []
     jsonList = []
     jsonList,bacteriaPercentage, numbRegions=parseContours(hierarchy, contours, greyImg)
@@ -139,14 +139,16 @@ def parseContours(hierarchy, contours, greyImg):
     bacteriaPercentage=float((100/nonContourArea)*contourArea)
     return jsonList, bacteriaPercentage, len(maxChildList)
 def sendToServer(snapshot, img):
-   
-    r=requests.post(ipAddress+port+apiPrefix+apiVersion+"/snapshot", json=snapshot)
+    files = {
+    'json': snapshot,
+    'file': (os.path.basename('/tmp/picture.png'), open('/tmp/picture.png', 'rb'), 'application/octet-stream')
+    }
+    r=requests.post(ipAddress+port+apiPrefix+apiVersion+"/snapshot", data=files)
     print(r.status_code)
     print(r.content)
+   
 
-    #for image
-    #r=requests.post(ipAddress+port+apiPrefix+apiVersion+"/image", data=img)
-    #print(r.status_code)
+    
 
 def takeImage():
     camera=PiCamera()
