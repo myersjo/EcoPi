@@ -4,6 +4,7 @@ import json
 import math
 import time
 import sys
+from time import sleep
 import requests
 import os
 from picamera import PiCamera
