@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Countdown from 'react-countdown-now';
-//Todo: clean this import:
 import './Tile.scss';
 
 class Tile extends Component {
