@@ -5,16 +5,17 @@ import math
 import time
 import sys
 import requests
-
+import os
+from picamera import PiCamera
 
 #####temp batch id#######
 #Need to figure out how and when I.D's are assigned to petri dish
 batch_id=0
-port="3000"
+port="3030"
 apiPrefix = '/api'
 apiVersion = '/v1.0'
-##Unique to my own set up
-ipAddress="http://192.168.192.41:"
+
+ipAddress="http://localhost:"
 
 
 def readImage(imgName, pos):
@@ -146,24 +147,51 @@ def sendToServer(snapshot, img):
     #r=requests.post(ipAddress+port+apiPrefix+apiVersion+"/image", data=img)
     #print(r.status_code)
 
+def takeImage():
+    camera=PiCamera()
+    camera.start_preview()
+    sleep(5)
+    camera.capture('/tmp/picture.png')
+    camera.stop_preview()
+
+def createJson(pos):
+    jsonData={}
+    jsonData["incubation_id"]=-1
+    jsonData["incubation_start_time"]=time.time()
+    jsonData["incubation_end_time"]=-1
+    jsonData["position"]=pos
+    jsonData["snapshots"]=[]
+    jsonData["notes"]=""
+    jsonData["dataAnalysis"]={}
+    jsonData["dataAnalysis"]["estimated_completion_time"]=-1
+    with open('./petriDish'+str(pos)+'.json', "w+") as jsonFile:
+        json.dump(jsonData, jsonFile)
+    return jsonData
 def main():
 
-    if not len(sys.argv)==3:
-        print("Invalid Number of arguments")
-        print("Usage python <script> <image> <json file name>")
-        sys.exit(-1)
-    imgName = sys.argv[1]
-    jsonName=sys.argv[2]
+    
+    takeImage()
+    imgName = '/tmp/picture.png'
+    
     snapshot={}
-    with open(jsonName, "r+") as jsonFile:
-        jsonData=json.load(jsonFile)
-        pos=jsonData["position"]
+    
+    
+    for pos in range(4):
+        jsonName='./petriDish'+str(pos)+'.json'
+        if(os.path.isfile(jsonName)):
+            with open(jsonName, "r") as jsonFile:
+                jsonData=json.load(jsonFile)
+        else:
+            jsonData=createJson(pos)
+
+            
+       
         img=readImage(imgName,pos)
-        
         snapshot=countBacteria(img, jsonData)
-        jsonFile.seek(0)
-        json.dump(jsonData, jsonFile)
-        jsonFile.truncate()
+        with open(jsonName, "r+") as jsonFile:
+            jsonFile.seek(0)
+            json.dump(jsonData, jsonFile)
+            jsonFile.truncate()
     sendToServer(snapshot, img)
         
    
