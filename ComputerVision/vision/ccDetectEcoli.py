@@ -60,7 +60,7 @@ def countBacteria(img, jsonData):
     retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     connectComponentsImg = img.copy()
-    sd, contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    sd,contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     maxChildList = []
     jsonList = []
     jsonList,bacteriaPercentage, numbRegions=parseContours(hierarchy, contours, greyImg)
@@ -75,7 +75,7 @@ def countBacteria(img, jsonData):
     for i in range(len(maxChildList)):
         cv.drawContours(connectComponentsImg, contours, maxChildList[i], (0, 255, 0), -1)
 
-    #cv.imwrite("detectedBacteria"+str(batch_id)+".png", connectComponentsImg)
+    cv.imwrite("detectedBacteria"+str(batch_id)+".png", connectComponentsImg)
     
     snapshots.append(newSnapshot)
     jsonData["snapshots"]=snapshots
@@ -139,11 +139,11 @@ def parseContours(hierarchy, contours, greyImg):
     bacteriaPercentage=float((100/nonContourArea)*contourArea)
     return jsonList, bacteriaPercentage, len(maxChildList)
 def sendToServer(snapshot, img):
-    files = {
-    'json': snapshot,
-    'file': (os.path.basename('/tmp/picture.png'), open('/tmp/picture.png', 'rb'), 'application/octet-stream')
+    #files = {
+   # 'json': (None,snapshot,'application/json')
+    #'file': (os.path.basename('/tmp/picture.png'), open('/tmp/picture.png', 'rb'), 'application/octet-stream')
     }
-    r=requests.post(ipAddress+port+apiPrefix+apiVersion+"/snapshot", data=files)
+    r=requests.post(ipAddress+port+apiPrefix+apiVersion+"/snapshot", json=snapshot)
     print(r.status_code)
     print(r.content)
    
