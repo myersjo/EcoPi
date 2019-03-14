@@ -150,7 +150,7 @@ def sendToServer(snapshot, img):
     #files = {
    # 'json': (None,snapshot,'application/json')
     #'file': (os.path.basename('/tmp/picture.png'), open('/tmp/picture.png', 'rb'), 'application/octet-stream')
-    }
+   # }
     r=requests.post(ipAddress+port+apiPrefix+apiVersion+"/snapshot", json=snapshot)
     print(r.status_code)
     print(r.content)
