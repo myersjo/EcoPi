@@ -110,6 +110,14 @@ def parseContours(hierarchy, contours, greyImg):
             mask = np.zeros(greyImg.shape, np.uint8)
             epsilon = .1 * perimeter
             approx = cv.approxPolyDP(contour, epsilon, True)
+            if hullArea==0:
+                solidity=-1
+            else:
+                solidity=float(float(area) / hullArea)
+            if perimeter==0:
+                circularity=-1
+            else:
+                circularity=float(4 * math.pi * area / (perimeter * perimeter))
             cv.drawContours(mask, contours, nextContour, 255, -1)
             mean = cv.mean(greyImg, mask=mask)[0]
             totalContourArea+=area
@@ -118,8 +126,8 @@ def parseContours(hierarchy, contours, greyImg):
                 "Contour ID": int(nextContour),
                 "Perimeter": float(perimeter),
                 "Area": float(area),
-                "Solidity": float(float(area) / hullArea),
-                "Circularity": float(4 * math.pi * area / (perimeter * perimeter)),
+                "Solidity":solidity ,
+                "Circularity":circularity ,
                 "Mean Color (Greyscale)": mean,
                 "Line Segments": len(approx)
             }
