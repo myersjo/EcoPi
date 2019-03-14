@@ -20,6 +20,9 @@ const styles = theme => ({
     caretColor: '#00d7c2'
   },
   label: {
+    // textTransform: "uppercase",
+    fontWeight: 400,
+    fontSize: '14px',
     color: '#606875',
     '&$focused': {
       color: '#00d7c2'

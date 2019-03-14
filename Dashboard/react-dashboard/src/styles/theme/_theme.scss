@@ -37,12 +37,14 @@
   font-size: 16px;
   text-transform: uppercase;
   text-align: left;
-  line-height: 0;
+  margin-top: 0;
   margin-bottom: 2em;
 }
 
 %tile-label {
   @extend %tile-text;
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
 }

@@ -56,13 +56,13 @@ class App extends Component {
             index={this.state.slideNum}
             onChangeIndex={this.handleChangeIndex}
             style={{
-              gridColumn: '2/5'
+              gridColumn: '2/6'
             }}
           >
             {/* TODO: Will probably need to abstract out each screen, maybe even each tile within that. Just doing it all here for now*/}
             <IncubationInProgressScreen />
             <Screen>
-              <Tile style={{ gridRow: '1/2' }}>
+              <Tile style={{ gridRow: '1/6' }}>
                 <Uploadimg />
               </Tile>
             </Screen>
