@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ImageUploader from 'react-images-upload';
-
+import './Uploadimg.scss';
 
 class Uploadimg extends Component {
   constructor(props) {

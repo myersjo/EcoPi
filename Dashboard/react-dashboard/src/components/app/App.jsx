@@ -3,15 +3,12 @@ import './App.scss';
 import Dashboard from '../dashboard/Dashboard.jsx';
 import Navbar from '../navbar/Navbar.jsx';
 import Screen from '../screen/Screen.jsx';
-import Tile from '../tile/Tile.jsx';
-import Uploadimg from '../uploadimg/Uploadimg.jsx';
-import Divider from '@material-ui/core/Divider';
 import SwipeableViews from 'react-swipeable-views';
-import ImageUploader from 'react-images-upload';
 
 //Screen imports
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import IncubationInProgressScreen from './../screens/incubationInProgressScreen/IncubationInProgressScreen.jsx';
+import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
 
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
 
@@ -61,11 +58,7 @@ class App extends Component {
           >
             {/* TODO: Will probably need to abstract out each screen, maybe even each tile within that. Just doing it all here for now*/}
             <IncubationInProgressScreen />
-            <Screen>
-              <Tile style={{ gridRow: '1/6' }}>
-                <Uploadimg />
-              </Tile>
-            </Screen>
+            <UploadScreen />
             <LivestreamScreen />
             <Screen>Screen 4</Screen>
             <Screen>Screen 5</Screen>
