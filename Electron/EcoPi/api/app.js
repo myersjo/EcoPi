@@ -2,6 +2,10 @@ const express = require('express')
 const app = express()
 const fs = require('fs')
 const cors = require('cors');
+const moment = require('moment')
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json()
@@ -11,6 +15,11 @@ const apiPrefix = '/api'
 const apiVersion = '/v1.0'
 
 const tmpFileName = 'snapshot.json'
+const clients = { 'pi': null, 'dashboard': null }
+const dashboard_ns = "/dashboard"
+const pi_ns = "/pi"
+
+server.listen(port, () => console.log(`EcoPi API listening on port ${port}!`));
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -50,4 +59,31 @@ app.get(apiPrefix + apiVersion + '/snapshot', function (req, res) {
   });
 });
 
-app.listen(port, () => console.log(`EcoPi API listening on port ${port}!`))
+// app.listen(port, () => console.log(`EcoPi API listening on port ${port}!`))
+
+var timestampPrint = function (message) {
+  console.log('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] ' + message + ' ')
+};
+
+var pingEventHandler = function(data) {
+  timestampPrint('Ping received, sending pong')
+  pi.emit('pong', moment().format('YYYY-MM-DD HH:mm:ss'))
+};
+
+// Web socket connection
+var pi = io.of(pi_ns)
+  .on('connection', function (socket) {
+    socket.emit('welcome', 'Hello new Pi');
+    timestampPrint('New Pi Connection')
+
+    socket.on('disconnect', (reason) => {
+      timestampPrint('Pi Disconnected');
+    });
+
+    socket.on('ping', pingEventHandler);
+  });
+
+var dashboard = io.of(dashboard_ns)
+  .on('connection', function (socket) {
+    socket.emit('Hello new dashboard');
+  });
