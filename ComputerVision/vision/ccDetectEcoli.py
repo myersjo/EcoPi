@@ -7,7 +7,7 @@ import sys
 from time import sleep
 import requests
 import os
-from picamera import PiCamera
+#from picamera import PiCamera
 
 #####temp batch id#######
 #Need to figure out how and when I.D's are assigned to petri dish
@@ -60,7 +60,7 @@ def countBacteria(img, jsonData):
     retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     connectComponentsImg = img.copy()
-    sd,contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     maxChildList = []
     jsonList = []
     jsonList,bacteriaPercentage, numbRegions=parseContours(hierarchy, contours, greyImg)
@@ -181,7 +181,7 @@ def createJson(pos):
 def main():
 
     
-    takeImage()
+   # takeImage()
     imgName = '/tmp/picture.png'
     
     snapshot={}
