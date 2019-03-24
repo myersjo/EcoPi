@@ -18,6 +18,7 @@ def timestampPrint(message):
 def getTempHumidity():
     # Read temperature and humidity from sensor and return results
     result = {}
+    result['timestamp'] = datetime.datetime.now().isoformat()
     result['temperature'] = 37  # replace with actual reading
     result['humidity'] = 80
     return result
@@ -56,7 +57,8 @@ def getSnapshot():
     result = {}
     result['timestamp'] = datetime.datetime.now().isoformat()
     result['sensors'] = getTempHumidity()
-    result['image_analysis'] = "" #getImageAnalysis(imgPath)
+    result['image_analysis'] = ""  # TODO: getImageAnalysis(imgPath)
+    result['position'] = a # TODO: get position from image analysis
 
     with open(imgPath, "rb") as imgFile:
         result['image_base64'] = base64.b64encode(imgFile.read()).decode('utf-8')
@@ -89,25 +91,27 @@ def on_disconnect(data):
 @sio.on('start_incubation', namespace=NAMESPACE)
 def on_start_incubation(data):
     timestampPrint('Starting incubation')
-    # Turn on heating element and fan
+    # TODO: Turn on heating element and fan
     return 200
 
 @sio.on('stop_incubation', namespace=NAMESPACE)
 def on_stop_incubation(data):
     timestampPrint('Stopping incubation')
-    # Turn off heating element and fan
+    # TODO: Turn off heating element and fan
     return 200
 
 @sio.on('start_livestream', namespace=NAMESPACE)
 def on_start_livestream(data):
     timestampPrint('Starting livestream')
-    # Turn on LEDs and livestream
+    # TODO: Turn on LEDs and livestream
+    startLivestream()
     return 200
 
 @sio.on('stop_livestream', namespace=NAMESPACE)
 def on_stop_livestream(data):
     timestampPrint('Stopping livestream')
-    # Turn off LEDs and livestream
+    # TODO: Turn off LEDs and livestream
+    stopLivestream()
     return 200
 
 @sio.on('take_snapshot', namespace=NAMESPACE)
