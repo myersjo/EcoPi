@@ -10,6 +10,12 @@ sio = socketio.Client()
 def timestampPrint(message):
     print('[{}] {} '.format(datetime.datetime.now(), message))
 
+def getSnapshot():
+    # Stop livestream (if active), take picture, start livestream (if active),
+    #  analyse image, get temp and humidity, send results
+    result = {}
+    return result
+
 @sio.on('connect')
 def on_connect():
     # print('[{}] Connected '.format(datetime.datetime.utcnow()))
@@ -36,6 +42,36 @@ def on_disconnect(data):
     # print('[{}] Disconnected '.format(datetime.datetime.utcnow()))
     timestampPrint('Disconnected')
     return datetime.datetime.now()
+
+@sio.on('start_incubation', namespace=NAMESPACE)
+def on_start_incubation(data):
+    timestampPrint('Starting incubation')
+    # Turn on heating element and fan
+    return 200
+
+@sio.on('stop_incubation', namespace=NAMESPACE)
+def on_stop_incubation(data):
+    timestampPrint('Stopping incubation')
+    # Turn off heating element and fan
+    return 200
+
+@sio.on('start_livestream', namespace=NAMESPACE)
+def on_start_livestream(data):
+    timestampPrint('Starting livestream')
+    # Turn on LEDs and livestream
+    return 200
+
+@sio.on('stop_livestream', namespace=NAMESPACE)
+def on_stop_livestream(data):
+    timestampPrint('Stopping livestream')
+    # Turn off LEDs and livestream
+    return 200
+
+@sio.on('take_snapshot', namespace=NAMESPACE)
+def on_take_snapshot(data):
+    timestampPrint('Taking snapshot')
+    snapshot = getSnapshot()
+    sio.emit('new_snapshot', snapshot, namespace=NAMESPACE)
 
 def sendPing():
     while(True):
