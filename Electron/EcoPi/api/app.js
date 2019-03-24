@@ -20,6 +20,8 @@ const clients = { 'pi': null, 'dashboard': null }
 const dashboard_ns = "/dashboard"
 const pi_ns = "/pi"
 
+const get_temp_humidity_interval = 5000
+
 var serviceAccount = require('./securityAccountKey.json');
 
 
@@ -85,14 +87,39 @@ var pingEventHandler = function(data) {
   pi.emit('pong', moment().format('YYYY-MM-DD HH:mm:ss'))
 };
 
+var sendToDashboard = function (event, data) {
+  if (clients.dashboard) {
+    clients.dashboard.emit(event, data);
+    timestampPrint(event + ' sent to dashboard')
+    return true;
+  }
+  else {
+    timestampPrint('ERROR: No dashboard connected')
+    return false;
+  }
+}
+
+var sendToPi = function (event, data = null) {
+  if (clients.pi) {
+    clients.pi.emit(event, data);
+    timestampPrint(event + ' sent to Pi')
+    return true;
+  }
+  else {
+    timestampPrint('ERROR: No Pi connected')
+    return false;
+  }
+}
+
 // Web socket connection
 var pi = io.of(pi_ns)
   .on('connection', function (socket) {
     socket.emit('welcome', 'Hello new Pi');
-    timestampPrint('New Pi Connection')
+    timestampPrint('New Pi Connection');
+    clients.pi = socket;
 
     socket.on('disconnect', (reason) => {
-      timestampPrint('Pi Disconnected');
+      timestampPrint('Pi Disconnected: ' + reason);
     });
 
     socket.on('ping', pingEventHandler);
@@ -102,12 +129,51 @@ var pi = io.of(pi_ns)
     });
 
     socket.on('new_snapshot', (data) => {
-      timestampPrint('New snapshot received')
-      // Save result in datastore and send to dashboard
+      timestampPrint('New snapshot received');
+
+      // Saving to file only used for testing
+      let buff = Buffer.from(JSON.parse(data).image_base64, 'base64');
+      var filename = 'picture' + moment().format('-YYMMDD-HHmmss') + '.png';
+      fs.writeFile(filename, buff, function (err) {
+        if (err)
+          timestampPrint('Error saving image: ' + err);
+        timestampPrint('Image saved: ' + filename);
+      });
+
+      sendToDashboard('new_snapshot', data);
+
+      // Save to db
+
+    });
+
+    socket.on('new_temp_humidity_reading', (data) => {
+      timestampPrint('New temperature and humidity readings received');
+      timestampPrint('    Temperature: ' + data.temperature);
+      timestampPrint('    Humidity: ' + data.humidity);
+
+      sendToDashboard('new_temp_humidity_reading', data);
+      
+      // Save to db
+
     });
   });
 
 var dashboard = io.of(dashboard_ns)
   .on('connection', function (socket) {
-    socket.emit('Hello new dashboard');
+    socket.emit('welcome', 'Hello new dashboard');
+    timestampPrint('New dashboard connection');
+    clients.dashboard = socket;
+
+    socket.on('start_incubation', (data) => {
+      var interval = data.interval;
+      timestampPrint('Starting incubation with snapshot interval: ' + interval + 'ms');
+
+      setInterval(function () {
+        sendToPi('get_temp_humidity');
+      }, get_temp_humidity_interval)
+    
+      setInterval(function () {
+        sendToPi('take_snapshot');
+      }, interval)
+    });
   });
