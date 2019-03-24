@@ -3,7 +3,7 @@ const app = express()
 const fs = require('fs')
 const cors = require('cors');
 const moment = require('moment')
-const admin = require('firebase-admin');
+var firebase = require("firebase");
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -20,13 +20,16 @@ const clients = { 'pi': null, 'dashboard': null }
 const dashboard_ns = "/dashboard"
 const pi_ns = "/pi"
 
-var serviceAccount = require('./securityAccountKey.json');
+var config = {
+  apiKey: "AIzaSyCfR3kTPh2XLQVeIergskkeCpdUG0JLcnM",
+  authDomain: "testproject-34b05.firebaseapp.com",
+  databaseURL: "https://testproject-34b05.firebaseio.com",
+  projectId: "testproject-34b05",
+  storageBucket: "testproject-34b05.appspot.com",
+  messagingSenderId: "993848483238"
+};
+firebase.initializeApp(config);
 
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://testproject-34b05.firebaseio.com"
-});
 
 
 // server.listen(port, () => console.log(`EcoPi API listening on port ${port}!`));
@@ -51,7 +54,7 @@ app.post(apiPrefix + apiVersion + '/snapshot', jsonParser, function (req, res) {
 
   console.log(req.body);
   
-  var db = admin.firestore();
+  var db = firebase.firestore();
   var docRef=db.collection('snapshots').doc('snapshot');
   var setData=docRef.set(req.body);
 
