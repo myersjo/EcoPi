@@ -5,7 +5,6 @@ const cors = require('cors');
 const moment = require('moment')
 const admin = require('firebase-admin');
 
-
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
@@ -30,10 +29,8 @@ admin.initializeApp({
 });
 
 
-
-//const uid=admin.auth().currentUser.uid;
-
-server.listen(port, () => console.log(`EcoPi API listening on port ${port}!`));
+// server.listen(port, () => console.log(`EcoPi API listening on port ${port}!`));
+server.listen(port, () => timestampPrint(`EcoPi API listening on port ${port}!`));
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -53,10 +50,11 @@ app.post(apiPrefix + apiVersion + '/snapshot', jsonParser, function (req, res) {
     return res.sendStatus(400);
 
   console.log(req.body);
+  
   var db = admin.firestore();
   var docRef=db.collection('snapshots').doc('snapshot');
-  var setData=docRef.set(req.body
-  );
+  var setData=docRef.set(req.body);
+
   fs.writeFile(tmpFileName, JSON.stringify(req.body), function (err) {
     if (err)
       return res.sendStatus(500);
@@ -98,6 +96,15 @@ var pi = io.of(pi_ns)
     });
 
     socket.on('ping', pingEventHandler);
+
+    socket.on('pong', (data) => {
+      timestampPrint('Pong received')
+    });
+
+    socket.on('new_snapshot', (data) => {
+      timestampPrint('New snapshot received')
+      // Save result in datastore and send to dashboard
+    });
   });
 
 var dashboard = io.of(dashboard_ns)
