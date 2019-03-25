@@ -7,14 +7,9 @@ import sys
 from time import sleep
 import requests
 import os
-#from picamera import PiCamera
 
-#####temp batch id#######
-#Need to figure out how and when I.D's are assigned to petri dish
-batch_id=0
-port="3030"
-apiPrefix = '/api'
-apiVersion = '/v1.0'
+
+
 
 ipAddress="http://localhost:"
 
@@ -44,11 +39,12 @@ def readImage(imgName, pos):
 
 
 
-def countBacteria(img, jsonData):
+def countBacteria(img, pos):
     
    
-    snapshots=jsonData["snapshots"]
+   
     newSnapshot={}
+    newSnapshot["position"]=pos
     newSnapshot["timestamp"]=time.time()
     newSnapshot["incubator_state"]={}
     newSnapshot["incubator_state"]["temperature"]=-1
@@ -60,7 +56,7 @@ def countBacteria(img, jsonData):
     retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     connectComponentsImg = img.copy()
-    contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    sd,contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     maxChildList = []
     jsonList = []
     jsonList,bacteriaPercentage, numbRegions=parseContours(hierarchy, contours, greyImg)
@@ -77,8 +73,8 @@ def countBacteria(img, jsonData):
 
     cv.imwrite("detectedBacteria"+str(batch_id)+".png", connectComponentsImg)
     
-    snapshots.append(newSnapshot)
-    jsonData["snapshots"]=snapshots
+    
+    
     return newSnapshot
     
     
@@ -158,12 +154,7 @@ def sendToServer(snapshot, img):
 
     
 
-def takeImage():
-    camera=PiCamera()
-    camera.start_preview()
-    sleep(5)
-    camera.capture('/tmp/picture.png')
-    camera.stop_preview()
+
 
 def createJson(pos):
     jsonData={}
@@ -178,34 +169,16 @@ def createJson(pos):
     with open('./petriDish'+str(pos)+'.json', "w+") as jsonFile:
         json.dump(jsonData, jsonFile)
     return jsonData
-def main():
 
-    
-   # takeImage()
-    imgName = '/tmp/picture.png'
-    
-    snapshot={}
-    
-    
+def visionAnalysis(imgName):
+    print(imgName)
+    snapshotList=[]
     for pos in range(4):
-        jsonName='./petriDish'+str(pos)+'.json'
-        if(os.path.isfile(jsonName)):
-            with open(jsonName, "r") as jsonFile:
-                jsonData=json.load(jsonFile)
-        else:
-            jsonData=createJson(pos)
-
-            
-       
+        snapshot={}
         img=readImage(imgName,pos)
-        snapshot=countBacteria(img, jsonData)
-        with open(jsonName, "r+") as jsonFile:
-            jsonFile.seek(0)
-            json.dump(jsonData, jsonFile)
-            jsonFile.truncate()
-    sendToServer(snapshot, img)
+        snapshot=countBacteria(img, pos)
+        snapshotList.append(snapshot)
+    return snapshotList
         
    
 
-if __name__=="__main__":
-    main()

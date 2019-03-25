@@ -5,6 +5,8 @@ const cors = require('cors');
 const moment = require('moment')
 var firebase = require("firebase");
 
+
+const gcs = require('@google-cloud/storage');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
@@ -25,12 +27,12 @@ var config = {
   authDomain: "testproject-34b05.firebaseapp.com",
   databaseURL: "https://testproject-34b05.firebaseio.com",
   projectId: "testproject-34b05",
-  storageBucket: "testproject-34b05.appspot.com",
+  storageBucket: "gs://testproject-34b05.appspot.com/",
   messagingSenderId: "993848483238"
 };
 firebase.initializeApp(config);
 
-
+//firebase.storage();
 
 // server.listen(port, () => console.log(`EcoPi API listening on port ${port}!`));
 server.listen(port, () => timestampPrint(`EcoPi API listening on port ${port}!`));
@@ -57,7 +59,9 @@ app.post(apiPrefix + apiVersion + '/snapshot', jsonParser, function (req, res) {
   var db = firebase.firestore();
   var docRef=db.collection('snapshots').doc('snapshot');
   var setData=docRef.set(req.body);
-
+ 
+  var ref=fire.ref();
+  //var mountainsRef=ref.child("/ComputerVision/testImages/petriDish.png");
   fs.writeFile(tmpFileName, JSON.stringify(req.body), function (err) {
     if (err)
       return res.sendStatus(500);
