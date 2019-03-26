@@ -1,4 +1,5 @@
 import socketio
+from vision import visionAnalysis
 import time, datetime
 
 HOST = "http://localhost"
@@ -13,7 +14,8 @@ def timestampPrint(message):
 def getSnapshot():
     # Stop livestream (if active), take picture, start livestream (if active),
     #  analyse image, get temp and humidity, send results
-    result = {}
+    # are we taking an image in this function?
+    result = visionAnalysis("pathToImage")
     return result
 
 @sio.on('connect')
