@@ -28,6 +28,9 @@
     "eject": "react-scripts eject",
     "electron-start": "electron ."
   },
+  "build":{
+    "npmRebuild": "false"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },
