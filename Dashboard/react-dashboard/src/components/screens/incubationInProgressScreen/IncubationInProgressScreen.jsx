@@ -5,8 +5,9 @@ import FormInput from './../../formInput/FormInput.jsx';
 import Button from './../../button/Button.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';
 import Countdown from 'react-countdown-now';
-
+import Countdown1 from 'react-countdown-clock';
 import './IncubationInProgressScreen.scss';
+import { Chart } from 'react-charts';
 
 //Temporary graph images
 import TimerSvg from './../../../assets/placeholder-graphs/timer.svg';
@@ -15,25 +16,37 @@ import LineGraphSVG from './../../../assets/placeholder-graphs/line-graph.svg';
 
 import PetriDish from './../../../assets/petriDish.png';
 import snapshot1 from './../../../assets/snapshot.json';
-
 //Globals
 let startTime, finishTime, startDate, finishDate;
 let incubationLength = 28800000;
 
 var unixTime = snapshot1.timestamp;
-var date = new Date(unixTime*1000);
+var date = new Date(unixTime * 1000);
 var a = new Date(unixTime * 1000);
-var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+];
 var year = a.getFullYear();
 var month = months[a.getMonth()];
 var date = a.getDate();
 var hour = a.getHours();
 var min = a.getMinutes();
 var sec = a.getSeconds();
-var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+console.log(time);
 
-
-var endDate = new Date(unixTime*1000 + incubationLength);
+var endDate = new Date(unixTime * 1000 + incubationLength);
 var date1 = endDate.getDate();
 var month1 = months[endDate.getMonth()];
 var year1 = endDate.getFullYear();
@@ -45,6 +58,27 @@ var sec1 = endDate.getSeconds();
 var bacPer = snapshot1.image_analysis.BacteriaPercentage;
 var noReg = snapshot1.image_analysis.number_regions;
 var temperature = snapshot1.incubator_state.temperature;
+
+var today = new Date();
+//getting current time for use in graph
+var time3 = today.getHours();
+//converting hours to milliseconds
+var time4 = time3 * 3600000;
+//data for bar chart, increments of 1800000 for 30 min intervals up to current time
+// Not implemented is past values of temperature, y is currently temp values
+const data1 = [
+  {
+    time4: time4,
+    label: 'Temperature over Time',
+    data: [
+      { x: time4 - 7200000, y: 33 },
+      { x: time4 - 5400000, y: 34 },
+      { x: time4 - 3600000, y: 34 },
+      { x: time4 - 1800000, y: 34 },
+      { x: time4, y: 35 }
+    ]
+  }
+];
 // Renderer callback with condition
 const largeCountdownRenderer = ({ hours, minutes, seconds, completed }) => {
   if (completed) {
@@ -119,11 +153,24 @@ class IncubationInProgressScreen extends Component {
         {/* Time */}
         <Tile style={{ gridRow: '1/7' }}>
           <h1 className="tile-heading">Time Remaining:</h1>
-          <img
-            style={{ width: '50%', margin: '0 auto 1em auto' }}
-            src={TimerSvg}
-            alt="Timer"
-          />
+          <div
+            style={{
+              marginTop: '',
+              marginBottom: '',
+              marginRight: '',
+              textAlign: 'center'
+            }}
+          >
+            <Countdown1
+              seconds={28800000}
+              color="#00CFBB"
+              alpha={0.9}
+              size={165}
+              weight={10}
+              timeFormat="hms"
+              fontSize={0}
+            />
+          </div>
           {/* <span className="large-digit">06:42:39</span> */}
           <Countdown
             date={Date.now() + incubationLength}
@@ -136,14 +183,22 @@ class IncubationInProgressScreen extends Component {
             <div className="two-col-info">
               <p className="tile-label">Start time:</p>
               {/* <span className="medium-digit">13:43:12</span> */}
-              <span className="medium-digit">{hour}:{min}:{sec}</span>
-              <span className="small-digit">{date} / {month} / {year}</span>
+              <span className="medium-digit">
+                {hour}:{min}:{sec}
+              </span>
+              <span className="small-digit">
+                {date} / {month} / {year}
+              </span>
             </div>
             {/* Finish Time */}
             <div className="two-col-info">
               <p className="tile-label">Finish time:</p>
-              <span className="medium-digit">{hour1}:{min1}:{sec1}</span>
-              <span className="small-digit">{date1} / {month1} / {year1}</span>
+              <span className="medium-digit">
+                {hour1}:{min1}:{sec1}
+              </span>
+              <span className="small-digit">
+                {date1} / {month1} / {year1}
+              </span>
             </div>
           </div>
         </Tile>
@@ -223,12 +278,21 @@ class IncubationInProgressScreen extends Component {
           <h1 className="tile-heading">
             <span className="active-heading">Temperature</span> | Humidity
           </h1>
-          <div className="flex-row" style={{ }}>
-            <img
-              src={LineGraphSVG}
-              alt="line graph"
-              style={{ width: '70%', display: 'inline' }}
-            />
+          <div className="flex-row" style={{}}>
+            <div
+              style={{
+                width: '500px',
+                height: '200px'
+              }}
+            >
+              <Chart
+                data={data1}
+                axes={[
+                  { primary: true, type: 'utc', position: 'bottom' },
+                  { type: 'linear', position: 'left' }
+                ]}
+              />
+            </div>
             <div
               className="flex-col"
               style={{ textAlign: 'left', margin: 'auto' }}
@@ -251,7 +315,7 @@ class IncubationInProgressScreen extends Component {
         {/* Analysis */}
         <Tile style={{ gridRow: '1/6' }}>
           <h1 className="tile-heading">Analysis Details:</h1>
-          <div style={{  textAlign: 'left', margin: 'auto'}}>
+          <div style={{ textAlign: 'left', margin: 'auto' }}>
             <ol>
               <li>
                 <p>No of regions: {noReg}</p>
