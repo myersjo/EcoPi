@@ -14,11 +14,37 @@ import ProgressBarSvg from './../../../assets/placeholder-graphs/progress-bar.sv
 import LineGraphSVG from './../../../assets/placeholder-graphs/line-graph.svg';
 
 import PetriDish from './../../../assets/petriDish.png';
+import snapshot1 from './../../../assets/snapshot.json';
 
 //Globals
 let startTime, finishTime, startDate, finishDate;
 let incubationLength = 28800000;
 
+var unixTime = snapshot1.timestamp;
+var date = new Date(unixTime*1000);
+var a = new Date(unixTime * 1000);
+var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var year = a.getFullYear();
+var month = months[a.getMonth()];
+var date = a.getDate();
+var hour = a.getHours();
+var min = a.getMinutes();
+var sec = a.getSeconds();
+var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+console.log(time);
+
+var endDate = new Date(unixTime*1000 + incubationLength);
+var date1 = endDate.getDate();
+var month1 = months[endDate.getMonth()];
+var year1 = endDate.getFullYear();
+
+var hour1 = endDate.getHours();
+var min1 = endDate.getMinutes();
+var sec1 = endDate.getSeconds();
+
+var bacPer = snapshot1.image_analysis.BacteriaPercentage;
+var noReg = snapshot1.image_analysis.number_regions;
+var temperature = snapshot1.incubator_state.temperature;
 // Renderer callback with condition
 const largeCountdownRenderer = ({ hours, minutes, seconds, completed }) => {
   if (completed) {
@@ -110,14 +136,14 @@ class IncubationInProgressScreen extends Component {
             <div className="two-col-info">
               <p className="tile-label">Start time:</p>
               {/* <span className="medium-digit">13:43:12</span> */}
-              <span className="medium-digit">{startTime}</span>
-              <span className="small-digit">{startDate}</span>
+              <span className="medium-digit">{hour}:{min}:{sec}</span>
+              <span className="small-digit">{date} / {month} / {year}</span>
             </div>
             {/* Finish Time */}
             <div className="two-col-info">
               <p className="tile-label">Finish time:</p>
-              <span className="medium-digit">{finishTime}</span>
-              <span className="small-digit">{finishDate}</span>
+              <span className="medium-digit">{hour1}:{min1}:{sec1}</span>
+              <span className="small-digit">{date1} / {month1} / {year1}</span>
             </div>
           </div>
         </Tile>
@@ -197,7 +223,7 @@ class IncubationInProgressScreen extends Component {
           <h1 className="tile-heading">
             <span className="active-heading">Temperature</span> | Humidity
           </h1>
-          <div className="flex-row" style={{ marginBottom: '1em' }}>
+          <div className="flex-row" style={{ }}>
             <img
               src={LineGraphSVG}
               alt="line graph"
@@ -208,15 +234,15 @@ class IncubationInProgressScreen extends Component {
               style={{ textAlign: 'left', margin: 'auto' }}
             >
               <p className="tile-label">Current:</p>
-              <span className="large-digit">36.4°C</span>
+              <span className="large-digit">{temperature}</span>
               <div style={{ display: 'flex' }}>
                 <div className="small-readout">
                   <p className="tile-label">High:</p>
-                  <span className="medium-digit">39.2°C</span>
+                  <span className="medium-digit">{temperature}</span>
                 </div>
                 <div className="small-readout">
                   <p className="tile-label">Low:</p>
-                  <span className="medium-digit">34.3°C</span>
+                  <span className="medium-digit">{temperature}</span>
                 </div>
               </div>
             </div>
@@ -224,35 +250,17 @@ class IncubationInProgressScreen extends Component {
         </Tile>
         {/* Analysis */}
         <Tile style={{ gridRow: '1/6' }}>
-        <h1 className="tile-heading">Analysis Details:</h1>
-        <div style={{}}>
-          <ol>
-            <li style={{}}>
-              <p>Incubation 1 Details</p>
-            </li>
-            <li>
-              <p>Incubation 2 Details</p>
-            </li>
-            <li>
-              <p>Incubation 3 Details</p>
-            </li>
-            <li>
-              <p>Incubation 4 Details</p>
-            </li>
-            <li>
-              <p>Incubation 5 Details</p>
-            </li>
-            <li>
-              <p>Incubation 6 Details</p>
-            </li>
-            <li>
-              <p>Incubation 7 Details</p>
-            </li>
-            <li>
-              <p>Incubation 8 Details</p>
-            </li>
-          </ol>
-        </div>
+          <h1 className="tile-heading">Analysis Details:</h1>
+          <div style={{  textAlign: 'left', margin: 'auto'}}>
+            <ol>
+              <li>
+                <p>No of regions: {noReg}</p>
+              </li>
+              <li>
+                <p>Bacterial %: {bacPer} </p>
+              </li>
+            </ol>
+          </div>
         </Tile>
         {/* Metadata */}
         <Tile style={{ gridRow: '6/11' }}>
