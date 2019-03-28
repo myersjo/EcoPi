@@ -31,7 +31,7 @@ var hour = a.getHours();
 var min = a.getMinutes();
 var sec = a.getSeconds();
 var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-console.log(time);
+
 
 var endDate = new Date(unixTime*1000 + incubationLength);
 var date1 = endDate.getDate();
