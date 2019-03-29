@@ -5,9 +5,14 @@ import FormInput from './../../formInput/FormInput.jsx';
 import Button from './../../button/Button.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';
 import Countdown from 'react-countdown-now';
-import Countdown1 from 'react-countdown-clock';
 import './IncubationInProgressScreen.scss';
+
+//Chart imports
 import { Chart } from 'react-charts';
+import Countdown1 from 'react-countdown-clock';
+import CircularProgressbar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css'; //default styles
+
 
 //Temporary graph images
 import TimerSvg from './../../../assets/placeholder-graphs/timer.svg';
@@ -15,15 +20,10 @@ import ProgressBarSvg from './../../../assets/placeholder-graphs/progress-bar.sv
 import LineGraphSVG from './../../../assets/placeholder-graphs/line-graph.svg';
 
 import PetriDish from './../../../assets/petriDish.png';
-import snapshot1 from './../../../assets/snapshot.json';
-//Globals
-let startTime, finishTime, startDate, finishDate;
-let incubationLength = 28800000;
+import snapshotDummyData from './../../../assets/snapshot.json';
 
-var unixTime = snapshot1.timestamp;
-var date = new Date(unixTime * 1000);
-var a = new Date(unixTime * 1000);
-var months = [
+// Global constants
+const months = [
   'Jan',
   'Feb',
   'Mar',
@@ -37,35 +37,48 @@ var months = [
   'Nov',
   'Dec'
 ];
-var year = a.getFullYear();
-var month = months[a.getMonth()];
-var date = a.getDate();
-var hour = a.getHours();
-var min = a.getMinutes();
-var sec = a.getSeconds();
-var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+
+//Globals
+let startTime, finishTime, startDate, finishDate;
+let snapshotData = snapshotDummyData;
+let incubationLength = 28800000;
+
+let unixTime = snapshotData.timestamp;
+
+// Start time
+let date = new Date(unixTime * 1000);
+let a = new Date(unixTime * 1000);
+let year = a.getFullYear();
+let month = months[a.getMonth()];
+date = a.getDate();
+let hour = a.getHours();
+let min = a.getMinutes();
+let sec = a.getSeconds();
+let time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
 console.log(time);
 
-var endDate = new Date(unixTime * 1000 + incubationLength);
-var date1 = endDate.getDate();
-var month1 = months[endDate.getMonth()];
-var year1 = endDate.getFullYear();
+// End time
+let endDate = new Date(unixTime * 1000 + incubationLength);
+let date1 = endDate.getDate();
+let month1 = months[endDate.getMonth()];
+let year1 = endDate.getFullYear();
+let hour1 = endDate.getHours();
+let min1 = endDate.getMinutes();
+let sec1 = endDate.getSeconds();
 
-var hour1 = endDate.getHours();
-var min1 = endDate.getMinutes();
-var sec1 = endDate.getSeconds();
+// Temporary setup of snapshot variables
+let bacPer = snapshotData.image_analysis.BacteriaPercentage;
+let noReg = snapshotData.image_analysis.number_regions;
+let temperature = snapshotData.incubator_state.temperature;
 
-var bacPer = snapshot1.image_analysis.BacteriaPercentage;
-var noReg = snapshot1.image_analysis.number_regions;
-var temperature = snapshot1.incubator_state.temperature;
-
-var today = new Date();
-//getting current time for use in graph
-var time3 = today.getHours();
-//converting hours to milliseconds
-var time4 = time3 * 3600000;
-//data for bar chart, increments of 1800000 for 30 min intervals up to current time
+let today = new Date();
+// getting current time for use in graph
+let time3 = today.getHours();
+// converting hours to milliseconds
+let time4 = time3 * 3600000;
+// data for bar chart, increments of 1800000 for 30 min intervals up to current time
 // Not implemented is past values of temperature, y is currently temp values
+
 const data1 = [
   {
     time4: time4,
@@ -79,6 +92,7 @@ const data1 = [
     ]
   }
 ];
+
 // Renderer callback with condition
 const largeCountdownRenderer = ({ hours, minutes, seconds, completed }) => {
   if (completed) {
@@ -137,8 +151,18 @@ class IncubationInProgressScreen extends Component {
     return returnString;
   };
 
+  handleNewSnapshot(){
+      // TODO: Update snapshot varables here.
+      // Note (dont update time)
+  }
+
+  handleTempHumUpdate(){
+
+  }
+
   componentDidMount() {
     let start = new Date();
+    console.log(start);
     let finish = Date.now() + incubationLength;
     finish = new Date(finish);
     startTime = this.formatTime(start);
@@ -153,25 +177,44 @@ class IncubationInProgressScreen extends Component {
         {/* Time */}
         <Tile style={{ gridRow: '1/7' }}>
           <h1 className="tile-heading">Time Remaining:</h1>
-          <div
+          {/* <div
             style={{
-              marginTop: '',
-              marginBottom: '',
-              marginRight: '',
-              textAlign: 'center'
+              // marginTop: '',
+              // marginBottom: '',
+              // marginRight: '',
+              // textAlign: 'center'
+              display: 'flex',
+              justifyContent: 'left',
+              alignItems: 'left',
+              maxWidth: '100%',
+              maxHeight: '100%'
+
             }}
           >
             <Countdown1
               seconds={28800000}
               color="#00CFBB"
               alpha={0.9}
-              size={165}
+              size={100}
               weight={10}
               timeFormat="hms"
               fontSize={0}
             />
+          </div> */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '30%',
+            maxHeight: '30%'
+           }}>
+            <CircularProgressbar percentage={10} text={`${10}%`} styles={{
+              root: {
+                maxWidth: '100%',
+                maxHeight: '100%'
+              }
+            }}/>
           </div>
-          {/* <span className="large-digit">06:42:39</span> */}
           <Countdown
             date={Date.now() + incubationLength}
             renderer={largeCountdownRenderer}
