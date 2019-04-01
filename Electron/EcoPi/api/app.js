@@ -3,10 +3,10 @@ const app = express()
 const fs = require('fs')
 const cors = require('cors');
 const moment = require('moment')
-var firebase = require("firebase");
+var firebase = require("firebase-admin");
 
 
-const gcs = require('@google-cloud/storage');
+
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
@@ -22,15 +22,12 @@ const clients = { 'pi': null, 'dashboard': null }
 const dashboard_ns = "/dashboard"
 const pi_ns = "/pi"
 
-var config = {
-  apiKey: "AIzaSyCfR3kTPh2XLQVeIergskkeCpdUG0JLcnM",
-  authDomain: "testproject-34b05.firebaseapp.com",
-  databaseURL: "https://testproject-34b05.firebaseio.com",
-  projectId: "testproject-34b05",
-  storageBucket: "gs://testproject-34b05.appspot.com/",
-  messagingSenderId: "993848483238"
-};
-firebase.initializeApp(config);
+var serviceAccount = require('./securityAccountKey.json');
+
+firebase.initializeApp({
+  credential: firebase.credential.cert(serviceAccount),
+  databaseURL: "https://testproject-34b05.firebaseio.com"
+});
 
 //firebase.storage();
 
@@ -60,7 +57,7 @@ app.post(apiPrefix + apiVersion + '/snapshot', jsonParser, function (req, res) {
   var docRef=db.collection('snapshots').doc('snapshot');
   var setData=docRef.set(req.body);
  
-  var ref=fire.ref();
+ // var ref=fire.ref();
   //var mountainsRef=ref.child("/ComputerVision/testImages/petriDish.png");
   fs.writeFile(tmpFileName, JSON.stringify(req.body), function (err) {
     if (err)
