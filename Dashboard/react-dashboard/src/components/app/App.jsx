@@ -13,7 +13,24 @@ import ImageUploader from 'react-images-upload';
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import IncubationInProgressScreen from './../screens/incubationInProgressScreen/IncubationInProgressScreen.jsx';
 
+const express = require('express')
+const app = express()
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+const HOST = "http://localhost"
+const PORT = 3030
+const NAMESPACE = "/dashboard"
+
+//may not be necessary
+//server.listen(PORT, () => timestampPrint(`Dashboard listening on port ${PORT}!`));
+var socket = io(HOST + ':' + PORT + '/' + NAMESPACE)
+
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
+
+var timestampPrint = function (message) {
+  console.log('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] ' + message + ' ')
+};
 
 class App extends Component {
   state = {
@@ -31,6 +48,31 @@ class App extends Component {
       .then(data => this.setState({ data }))
       .catch(err => console.log(err));
     console.log('Fetched data from API.');
+
+    socket.on('connect' () => {
+        timestampPrint('Connected to server')
+    });
+
+    socket.on('disconnect' () => {
+        timestampPrint('Disconnected')
+    });
+
+    socket.on('new_snapshot' (payload) => {
+        j_content = JSON.parse(payload)
+        timestampPrint(`New snapshot received from ${j_content.timestamp}`)
+        this.props.new_snapshot =
+    });
+
+    socket.on('new_temp_humidity_reading' (reading) => {
+        // Send down with props and update relevant component
+        timestampPrint('New temperature and humidity readings received')
+        timestampPrint( `   Temperature: ${reading.temperature}`)
+        timestampPrint( `   Temperature: ${reading.humidity}`)
+    });
+
+    socket.connect(() => {
+        timestampPrint('Establishing connection...')
+    });
   }
 
   handleSlideChange = (_, slideNum) => {
