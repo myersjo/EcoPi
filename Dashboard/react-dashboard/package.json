@@ -4,12 +4,17 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.9.2",
+    "express": "^4.16.4",
+    "http2": "^3.3.7",
+    "moment": "^2.24.0",
     "react": "^16.8.3",
     "react-countdown-now": "^2.1.0",
     "react-dom": "^16.8.3",
     "react-images-upload": "^1.2.6",
     "react-scripts": "2.1.5",
-    "react-swipeable-views": "^0.13.1"
+    "react-swipeable-views": "^0.13.1",
+    "socket.io": "^2.2.0",
+    "uws": "^10.148.1"
   },
   "scripts": {
     "start": "react-scripts start",
