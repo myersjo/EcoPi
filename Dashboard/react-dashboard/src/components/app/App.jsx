@@ -3,7 +3,7 @@ import './App.scss';
 import Dashboard from '../dashboard/Dashboard.jsx';
 import Navbar from '../navbar/Navbar.jsx';
 import Screen from '../screen/Screen.jsx';
-import Tile from '../tile/Tile.jsx';
+import Tile from '../Tile/Tile.jsx';
 import Uploadimg from '../uploadimg/Uploadimg.jsx';
 import Divider from '@material-ui/core/Divider';
 import SwipeableViews from 'react-swipeable-views';
@@ -12,7 +12,7 @@ import ImageUploader from 'react-images-upload';
 //Screen imports
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import IncubationInProgressScreen from './../screens/incubationInProgressScreen/IncubationInProgressScreen.jsx';
-
+import LogScreen from './../screens/logScreen/LogScreen.jsx';
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
 
 class App extends Component {
@@ -67,7 +67,7 @@ class App extends Component {
               </Tile>
             </Screen>
             <LivestreamScreen />
-            <Screen>Screen 4</Screen>
+            <LogScreen />
             <Screen>Screen 5</Screen>
           </SwipeableViews>
         </Dashboard>
