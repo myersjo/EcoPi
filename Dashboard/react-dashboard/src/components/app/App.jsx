@@ -3,28 +3,22 @@ import './App.scss';
 import Dashboard from '../dashboard/Dashboard.jsx';
 import Navbar from '../navbar/Navbar.jsx';
 import Screen from '../screen/Screen.jsx';
-import Tile from '../tile/Tile.jsx';
+import Tile from '../Tile/Tile.jsx';
 import Uploadimg from '../uploadimg/Uploadimg.jsx';
 import Divider from '@material-ui/core/Divider';
 import SwipeableViews from 'react-swipeable-views';
 import ImageUploader from 'react-images-upload';
+import openSocket from 'socket.io-client';
 
 //Screen imports
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import IncubationInProgressScreen from './../screens/incubationInProgressScreen/IncubationInProgressScreen.jsx';
 
-const express = require('express');
-const app = express();
 const moment = require('moment');
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
 
 const HOST = 'http://localhost';
 const PORT = 3030;
 const NAMESPACE = '/dashboard';
-//may not be necessary
-//server.listen(PORT, () => timestampPrint(`Dashboard listening on port ${PORT}!`));
-var socket = io(HOST + ':' + PORT + '/' + NAMESPACE);
 
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
 
@@ -39,7 +33,8 @@ class App extends Component {
     slideNum: 0,
     data: {},
     reading: {},
-    snapshot: {}
+    snapshot: {},
+    socket: openSocket(HOST + ':' + PORT + '/' + NAMESPACE)
   };
 
   componentDidMount() {
@@ -53,35 +48,31 @@ class App extends Component {
       .catch(err => console.log(err));
     console.log('Fetched data from API.');
 
-    socket.on('connect', () => {
+    this.state.socket.on('connect', () => {
       timestampPrint('Connected to server');
     });
 
-    socket.on('disconnect', () => {
+    this.state.socket.on('disconnect', () => {
       timestampPrint('Disconnected');
     });
 
-    socket.on('new_snapshot', payload => {
+    this.state.socket.on('new_snapshot', payload => {
       this.setState({ snapshot: JSON.parse(payload) });
       timestampPrint(
         `New snapshot received from ${this.state.snapshot.timestamp}`
       );
     });
 
-    socket.on('new_temp_humidity_reading', payload => {
+    this.state.socket.on('new_temp_humidity_reading', payload => {
       // Send down with props and update relevant component
       this.setState({ reading: payload });
       timestampPrint('New temperature and humidity readings received');
       timestampPrint(`   Temperature: ${this.state.reading.temperature}`);
       timestampPrint(`   Temperature: ${this.state.reading.humidity}`);
     });
-
-    socket.connect(() => {
-      timestampPrint('Establishing connection...');
-    });
-    //doublecheck this is necessary
+    //Doublecheck this is necessary -------
     var interval = { interval: 10000 };
-    socket.emit('start_incubation', interval);
+    this.state.socket.emit('start_incubation', interval);
   }
 
   handleSlideChange = (_, slideNum) => {

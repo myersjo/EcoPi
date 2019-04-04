@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../tile/Tile';
+import Tile from '../../Tile/Tile';
 import FormInput from './../../formInput/FormInput.jsx';
 import Button from './../../button/Button.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';
@@ -224,35 +224,35 @@ class IncubationInProgressScreen extends Component {
         </Tile>
         {/* Analysis */}
         <Tile style={{ gridRow: '1/6' }}>
-        <h1 className="tile-heading">Analysis Details:</h1>
-        <div style={{}}>
-          <ol>
-            <li style={{}}>
-              <p>Incubation 1 Details</p>
-            </li>
-            <li>
-              <p>Incubation 2 Details</p>
-            </li>
-            <li>
-              <p>Incubation 3 Details</p>
-            </li>
-            <li>
-              <p>Incubation 4 Details</p>
-            </li>
-            <li>
-              <p>Incubation 5 Details</p>
-            </li>
-            <li>
-              <p>Incubation 6 Details</p>
-            </li>
-            <li>
-              <p>Incubation 7 Details</p>
-            </li>
-            <li>
-              <p>Incubation 8 Details</p>
-            </li>
-          </ol>
-        </div>
+          <h1 className="tile-heading">Analysis Details:</h1>
+          <div style={{}}>
+            <ol>
+              <li style={{}}>
+                <p>Incubation 1 Details</p>
+              </li>
+              <li>
+                <p>Incubation 2 Details</p>
+              </li>
+              <li>
+                <p>Incubation 3 Details</p>
+              </li>
+              <li>
+                <p>Incubation 4 Details</p>
+              </li>
+              <li>
+                <p>Incubation 5 Details</p>
+              </li>
+              <li>
+                <p>Incubation 6 Details</p>
+              </li>
+              <li>
+                <p>Incubation 7 Details</p>
+              </li>
+              <li>
+                <p>Incubation 8 Details</p>
+              </li>
+            </ol>
+          </div>
         </Tile>
         {/* Metadata */}
         <Tile style={{ gridRow: '6/11' }}>
