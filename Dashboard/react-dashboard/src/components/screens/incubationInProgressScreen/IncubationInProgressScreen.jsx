@@ -9,7 +9,6 @@ import './IncubationInProgressScreen.scss';
 
 //Chart imports
 import { Chart } from 'react-charts';
-import Countdown1 from 'react-countdown-clock';
 import CircularProgressBar from './../../circularProgressBar/circularProgressBar.jsx';
 
 //Temporary graph images
@@ -139,7 +138,8 @@ class IncubationInProgressScreen extends Component {
   componentDidMount() {
     setInterval(() => {
       this.setState({
-        completion: (Date.now() - this.state.startUnix) / incubationLength
+        completion:
+          ((Date.now() - this.state.startUnix) / incubationLength) * 100
       });
     }, 10000); //Update every 10s
   }
@@ -150,30 +150,6 @@ class IncubationInProgressScreen extends Component {
         {/* Time */}
         <Tile style={{ gridRow: '1/7' }}>
           <h1 className="tile-heading">Time Remaining:</h1>
-          {/* <div
-            style={{
-              // marginTop: '',
-              // marginBottom: '',
-              // marginRight: '',
-              // textAlign: 'center'
-              display: 'flex',
-              justifyContent: 'left',
-              alignItems: 'left',
-              maxWidth: '100%',
-              maxHeight: '100%'
-
-            }}
-          >
-            <Countdown1
-              seconds={28800000}
-              color="#00CFBB"
-              alpha={0.9}
-              size={100}
-              weight={10}
-              timeFormat="hms"
-              fontSize={0}
-            />
-          </div> */}
           <div
             style={{
               display: 'flex',
@@ -185,7 +161,7 @@ class IncubationInProgressScreen extends Component {
           >
             <CircularProgressBar
               percentage={this.state.completion}
-              text={`${10}%`}
+              text={`${this.state.completion}%`}
             />
           </div>
           <Countdown
@@ -336,18 +312,74 @@ class IncubationInProgressScreen extends Component {
           </div>
         </Tile>
         {/* Analysis */}
-        <Tile style={{ gridRow: '1/6' }}>
+        <Tile style={{ gridRow: '1/6', textAlign: 'left' }}>
           <h1 className="tile-heading">Analysis Details:</h1>
-          <div style={{ textAlign: 'left', margin: 'auto' }}>
-            <ol>
-              <li>
-                <p>No of regions: {noReg}</p>
-              </li>
-              <li>
-                <p>Bacterial %: {bacPer} </p>
-              </li>
-            </ol>
+          <div>
+            <p className="tile-label" style={{ marginBottom: 0 }}>
+              Number of regions:
+            </p>
+            <p
+              className="large-digit"
+              style={{
+                marginTop: '-.4em',
+                marginBottom: '.25em',
+                marginRight: '.25em',
+                textAlign: 'right'
+              }}
+            >
+              {noReg}
+            </p>
           </div>
+          <hr className="divider" />
+          <div>
+            <p className="tile-label" style={{ marginBottom: 0 }}>
+              Bacterial %:
+            </p>
+            <p
+              className="large-digit"
+              style={{
+                marginTop: '-.4em',
+                marginBottom: '.25em',
+                marginRight: '.25em',
+                textAlign: 'right'
+              }}
+            >
+              {Math.floor(bacPer * 100) / 100}%
+            </p>
+          </div>
+          <hr className="divider" />
+          <div>
+            <p className="tile-label" style={{ marginBottom: 0 }}>
+              E-coli likelihood
+            </p>
+            <p
+              className="large-digit"
+              style={{
+                marginTop: '-.4em',
+                marginBottom: '.25em',
+                marginRight: '.25em',
+                textAlign: 'right',
+                color: '#00d7c2'
+              }}
+            >
+              12%
+            </p>
+          </div>
+
+          {/* // //{" "}
+            // <ol>
+            //   //{" "}
+            //   <li>
+            //     // <p>No of regions: {noReg}</p>
+            //     //{" "}
+            //   </li>
+            //   //{" "}
+            //   <li>
+            //     // <p>Bacterial %: {bacPer} </p>
+            //     //{" "}
+            //   </li>
+            //   //{" "}
+            // </ol> */}
         </Tile>
         {/* Metadata */}
         <Tile style={{ gridRow: '6/11' }}>
