@@ -34,6 +34,9 @@
   @extend %tile-label;
 }
 
+.tile-note {
+  @extend %tile-note;
+}
 .active-heading {
   color: $accent-aqua;
 }
@@ -41,7 +44,6 @@
 .divider {
   height: 1px;
   width: 100%;
-  margin-top: 1em;
   margin-bottom: 0;
   background-color: rgba($dark-blue2, 0.5);
   border: 0 none;

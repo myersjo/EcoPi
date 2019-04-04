@@ -3,16 +3,14 @@ import './App.scss';
 import Dashboard from '../dashboard/Dashboard.jsx';
 import Navbar from '../navbar/Navbar.jsx';
 import Screen from '../screen/Screen.jsx';
-import Tile from '../Tile/Tile.jsx';
-import Uploadimg from '../uploadimg/Uploadimg.jsx';
-import Divider from '@material-ui/core/Divider';
-import SwipeableViews from 'react-swipeable-views';
-import ImageUploader from 'react-images-upload';
 import openSocket from 'socket.io-client';
+import SwipeableViews from 'react-swipeable-views';
 
 //Screen imports
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import IncubationInProgressScreen from './../screens/incubationInProgressScreen/IncubationInProgressScreen.jsx';
+import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
+import LogScreen from './../screens/logScreen/LogScreen.jsx';
 
 const moment = require('moment');
 
@@ -102,17 +100,14 @@ class App extends Component {
             }}
           >
             {/* TODO: Will probably need to abstract out each screen, maybe even each tile within that. Just doing it all here for now*/}
+
             <IncubationInProgressScreen
               tempHumReading={this.state.reading}
               snapshot={this.state.snapshot}
             />
-            <Screen>
-              <Tile style={{ gridRow: '1/6' }}>
-                <Uploadimg />
-              </Tile>
-            </Screen>
+            <UploadScreen />
             <LivestreamScreen />
-            <Screen>Screen 4</Screen>
+            <LogScreen />
             <Screen>Screen 5</Screen>
           </SwipeableViews>
         </Dashboard>

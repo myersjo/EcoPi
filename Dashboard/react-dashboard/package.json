@@ -7,7 +7,12 @@
     "express": "^4.16.4",
     "http2": "^3.3.7",
     "moment": "^2.24.0",
+    
+    "rc-progress": "^2.3.0",
     "react": "^16.8.3",
+    "react-charts": "^2.0.0-alpha.12",
+    "react-circular-progressbar": "^1.0.0",
+    "react-countdown-clock": "^2.5.0",
     "react-countdown-now": "^2.1.0",
     "react-dom": "^16.8.3",
     "react-images-upload": "^1.2.6",

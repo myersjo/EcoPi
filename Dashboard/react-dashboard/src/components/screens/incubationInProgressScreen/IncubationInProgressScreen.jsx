@@ -5,19 +5,53 @@ import FormInput from './../../formInput/FormInput.jsx';
 import Button from './../../button/Button.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';
 import Countdown from 'react-countdown-now';
-
 import './IncubationInProgressScreen.scss';
 
+//Chart imports
+import { Chart } from 'react-charts';
+import CircularProgressBar from './../../circularProgressBar/circularProgressBar.jsx';
+import { Line } from 'rc-progress';
+
 //Temporary graph images
-import TimerSvg from './../../../assets/placeholder-graphs/timer.svg';
 import ProgressBarSvg from './../../../assets/placeholder-graphs/progress-bar.svg';
-import LineGraphSVG from './../../../assets/placeholder-graphs/line-graph.svg';
 
 import PetriDish from './../../../assets/petriDish.png';
+import snapshotDummyData from './../../../assets/snapshot.json';
 
 //Globals
-let startTime, finishTime, startDate, finishDate;
+let snapshotData = snapshotDummyData;
 let incubationLength = 28800000;
+let photoInterval = 1800000;
+
+let unixTime = snapshotData.timestamp;
+console.table(snapshotData);
+
+// Temporary setup of snapshot variables
+let bacPer = snapshotData.image_analysis.BacteriaPercentage;
+let noReg = snapshotData.image_analysis.number_regions;
+let temperature = snapshotData.incubator_state.temperature;
+
+let today = new Date();
+// getting current time for use in graph
+let time3 = today.getHours();
+// converting hours to milliseconds
+let time4 = time3 * 3600000;
+// data for bar chart, increments of 1800000 for 30 min intervals up to current time
+// Not implemented is past values of temperature, y is currently temp values
+
+const data1 = [
+  {
+    time4: time4,
+    label: 'Temperature',
+    data: [
+      { x: time4 - 7200000, y: 33 },
+      { x: time4 - 5400000, y: 34 },
+      { x: time4 - 3600000, y: 34 },
+      { x: time4 - 1800000, y: 34 },
+      { x: time4, y: 35 }
+    ]
+  }
+];
 
 // Renderer callback with condition
 const largeCountdownRenderer = ({ hours, minutes, seconds, completed }) => {
@@ -77,14 +111,47 @@ class IncubationInProgressScreen extends Component {
     return returnString;
   };
 
+  handleNewSnapshot() {
+    // TODO: Call function when snapshot is updated
+    this.setState({
+      nextPhotoUnix: Date.now() + photoInterval,
+      photosCaptured: this.state.photosCaptured++
+    });
+    console.log('handleNewSnapshot');
+    // Note (dont update time)
+  }
+
+  handleTempHumUpdate() {}
+
+  constructor(props) {
+    super(props);
+
+    // Setup time values
+    let startUnix = new Date();
+    let finishUnix = Date.now() + incubationLength; // TODO: Change this incubationLength to state/prop
+    let finish = new Date(finishUnix);
+
+    this.state = {
+      startUnix: startUnix,
+      startTime: this.formatTime(startUnix),
+      startDate: this.formatDate(startUnix),
+      finishUnix: finishUnix,
+      finishTime: this.formatTime(finish),
+      finishDate: this.formatDate(finish),
+      completion: 0,
+      nextPhotoUnix: Date.now() + photoInterval,
+      photosCaptured: 0,
+      totalPhotoCount: Math.floor(incubationLength / photoInterval)
+    };
+  }
+
   componentDidMount() {
-    let start = new Date();
-    let finish = Date.now() + incubationLength;
-    finish = new Date(finish);
-    startTime = this.formatTime(start);
-    finishTime = this.formatTime(finish);
-    startDate = this.formatDate(start);
-    finishDate = this.formatDate(finish);
+    setInterval(() => {
+      this.setState({
+        completion:
+          ((Date.now() - this.state.startUnix) / incubationLength) * 100
+      });
+    }, 10000); //Update every 10s
   }
 
   render() {
@@ -93,14 +160,22 @@ class IncubationInProgressScreen extends Component {
         {/* Time */}
         <Tile style={{ gridRow: '1/7' }}>
           <h1 className="tile-heading">Time Remaining:</h1>
-          <img
-            style={{ width: '50%', margin: '0 auto 1em auto' }}
-            src={TimerSvg}
-            alt="Timer"
-          />
-          {/* <span className="large-digit">06:42:39</span> */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '40%',
+              paddingBottom: '1em'
+            }}
+          >
+            <CircularProgressBar
+              percentage={this.state.completion}
+              text={`${this.state.completion}%`}
+            />
+          </div>
           <Countdown
-            date={Date.now() + incubationLength}
+            date={this.state.finishUnix}
             renderer={largeCountdownRenderer}
           />
 
@@ -109,15 +184,14 @@ class IncubationInProgressScreen extends Component {
             {/* Start Time */}
             <div className="two-col-info">
               <p className="tile-label">Start time:</p>
-              {/* <span className="medium-digit">13:43:12</span> */}
-              <span className="medium-digit">{startTime}</span>
-              <span className="small-digit">{startDate}</span>
+              <span className="medium-digit">{this.state.startTime}</span>
+              <span className="small-digit">{this.state.startDate}</span>
             </div>
             {/* Finish Time */}
             <div className="two-col-info">
               <p className="tile-label">Finish time:</p>
-              <span className="medium-digit">{finishTime}</span>
-              <span className="small-digit">{finishDate}</span>
+              <span className="medium-digit">{this.state.finishTime}</span>
+              <span className="small-digit">{this.state.finishDate}</span>
             </div>
           </div>
         </Tile>
@@ -136,11 +210,21 @@ class IncubationInProgressScreen extends Component {
               textAlign: 'right'
             }}
           >
-            5 / 16
+            {this.state.photosCaptured} / {this.state.totalPhotoCount}
           </p>
-          <img src={ProgressBarSvg} alt="Timer" />
-          <hr className="divider" />
-          <div className="two-col" style={{ marginBottom: '1em' }}>
+          <div style={{ width: '100%', height: 'auto' }}>
+            <Line
+              percent={
+                (this.state.photosCaptured / this.state.totalPhotoCount) * 100
+              }
+              strokeWidth="4"
+              strokeColor="#f00772"
+              trailWidth="4"
+              trailColor="#606875"
+            />
+          </div>
+          <hr className="divider" style={{ marginTop: '1em' }} />
+          <div className="two-col">
             <div className="two-col-info">
               <p className="tile-label">Interval:</p>
               <span className="medium-digit">30 mins</span>
@@ -148,7 +232,7 @@ class IncubationInProgressScreen extends Component {
             <div className="two-col-info">
               <p className="tile-label">Next photo:</p>
               <Countdown
-                date={Date.now() + 1800000}
+                date={this.state.nextPhotoUnix}
                 renderer={mediumCountdownRenderer}
               />
             </div>
@@ -197,69 +281,117 @@ class IncubationInProgressScreen extends Component {
           <h1 className="tile-heading">
             <span className="active-heading">Temperature</span> | Humidity
           </h1>
-          <div className="flex-row" style={{ marginBottom: '1em' }}>
-            <img
-              src={LineGraphSVG}
-              alt="line graph"
-              style={{ width: '70%', display: 'inline' }}
-            />
+          <div className="flex-row" style={{ height: '100%' }}>
+            <div
+              style={{
+                flex: 4,
+                height: '100%'
+              }}
+            >
+              <Chart
+                data={data1}
+                dark
+                axes={[
+                  {
+                    primary: true,
+                    type: 'utc',
+                    position: 'bottom'
+                  },
+                  { type: 'linear', position: 'left' }
+                ]}
+                getSeriesStyle={series => ({
+                  color: '#e7d622'
+                })}
+                primaryCursor
+                secondaryCursor
+                tooltip
+              />
+            </div>
             <div
               className="flex-col"
-              style={{ textAlign: 'left', margin: 'auto' }}
+              style={{
+                textAlign: 'left',
+                margin: 'auto',
+                flex: 1,
+                paddingLeft: '2em'
+              }}
             >
               <p className="tile-label">Current:</p>
-              <span className="large-digit">36.4°C</span>
+              <span className="large-digit">{temperature}</span>
               <div style={{ display: 'flex' }}>
                 <div className="small-readout">
                   <p className="tile-label">High:</p>
-                  <span className="medium-digit">39.2°C</span>
+                  <span className="medium-digit">{temperature}</span>
                 </div>
                 <div className="small-readout">
                   <p className="tile-label">Low:</p>
-                  <span className="medium-digit">34.3°C</span>
+                  <span className="medium-digit">{temperature}</span>
                 </div>
               </div>
             </div>
           </div>
         </Tile>
         {/* Analysis */}
-        <Tile style={{ gridRow: '1/6' }}>
+        <Tile style={{ gridRow: '1/6', textAlign: 'left' }}>
           <h1 className="tile-heading">Analysis Details:</h1>
-          <div style={{}}>
-            <ol>
-              <li style={{}}>
-                <p>Incubation 1 Details</p>
-              </li>
-              <li>
-                <p>Incubation 2 Details</p>
-              </li>
-              <li>
-                <p>Incubation 3 Details</p>
-              </li>
-              <li>
-                <p>Incubation 4 Details</p>
-              </li>
-              <li>
-                <p>Incubation 5 Details</p>
-              </li>
-              <li>
-                <p>Incubation 6 Details</p>
-              </li>
-              <li>
-                <p>Incubation 7 Details</p>
-              </li>
-              <li>
-                <p>Incubation 8 Details</p>
-              </li>
-            </ol>
+          <div style={{ padding: '0.25em 0 0.25em 0' }}>
+            <p className="tile-label" style={{ marginBottom: 0 }}>
+              Number of regions:
+            </p>
+            <p
+              className="large-digit"
+              style={{
+                marginTop: '-.4em',
+                marginBottom: '.25em',
+                marginRight: '.25em',
+                textAlign: 'right'
+              }}
+            >
+              {noReg}
+            </p>
+          </div>
+          <hr className="divider" />
+          <div style={{ padding: '0.25em 0 0.25em 0' }}>
+            <p className="tile-label" style={{ marginBottom: 0 }}>
+              Bacterial %:
+            </p>
+            <p
+              className="large-digit"
+              style={{
+                marginTop: '-.4em',
+                marginBottom: '.25em',
+                marginRight: '.25em',
+                textAlign: 'right'
+              }}
+            >
+              {Math.floor(bacPer * 100) / 100}%
+            </p>
+          </div>
+          <hr className="divider" />
+          <div style={{ padding: '0.25em 0 0.25em 0' }}>
+            <p className="tile-label" style={{ marginBottom: 0 }}>
+              E-coli likelihood
+            </p>
+            <p
+              className="large-digit"
+              style={{
+                marginTop: '-.4em',
+                marginBottom: '.25em',
+                marginRight: '.25em',
+                textAlign: 'right',
+                color: '#00d7c2'
+              }}
+            >
+              12%
+            </p>
           </div>
         </Tile>
         {/* Metadata */}
         <Tile style={{ gridRow: '6/11' }}>
           <h1 className="tile-heading">Metadata:</h1>
-          <FormInput>Title</FormInput>
-          <FormInput>Location</FormInput>
-          <FormInput isMultiLine rows="6">
+          <FormInput isMultiLine={false}>Title</FormInput>
+          <FormInput isMultiLine={false}>Location</FormInput>
+          <FormInput isMultiLine rows={5}>
             Description
           </FormInput>
         </Tile>

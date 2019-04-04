@@ -12,7 +12,7 @@ class LivestreamScreen extends Component {
             <img
               className="livestream"
               src="http://raspberrypi.local:8080/stream/video.mjpeg"
-              alt="livestream"
+              alt="Livestream"
               height="80%"
               width="80%"
             />
