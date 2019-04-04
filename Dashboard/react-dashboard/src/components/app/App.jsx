@@ -9,6 +9,7 @@ import SwipeableViews from 'react-swipeable-views';
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import IncubationInProgressScreen from './../screens/incubationInProgressScreen/IncubationInProgressScreen.jsx';
 import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
+import LogScreen from './../screens/logScreen/LogScreen.jsx';
 
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
 
@@ -60,7 +61,7 @@ class App extends Component {
             <IncubationInProgressScreen />
             <UploadScreen />
             <LivestreamScreen />
-            <Screen>Screen 4</Screen>
+            <LogScreen />
             <Screen>Screen 5</Screen>
           </SwipeableViews>
         </Dashboard>
