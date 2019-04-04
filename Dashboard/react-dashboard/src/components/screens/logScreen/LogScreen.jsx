@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
 import Tile from '../../tile/Tile';
-import Button from './../../button/Button.jsx';
+import StyledButton from './../../styledButton/StyledButton.jsx';
 import Info from './../../../assets/icons/info.svg';
 import snapshotDummyData from './../../../assets/snapshot.json';
 class LogScreen extends Component {

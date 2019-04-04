@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../Tile/Tile';
+import Tile from '../../tile/Tile';
 import FormInput from './../../formInput/FormInput.jsx';
-import Button from './../../button/Button.jsx';
+import StyledButton from './../../styledButton/StyledButton.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';
 import Countdown from 'react-countdown-now';
 import './IncubationInProgressScreen.scss';
@@ -117,8 +117,6 @@ class IncubationInProgressScreen extends Component {
       nextPhotoUnix: Date.now() + photoInterval,
       photosCaptured: this.state.photosCaptured++
     });
-    console.log('handleNewSnapshot');
-    // Note (dont update time)
   }
 
   handleTempHumUpdate() {}
@@ -262,9 +260,9 @@ class IncubationInProgressScreen extends Component {
                 margin: 'auto'
               }}
             >
-              <Button size="small">
+              <StyledButton isDot size="small">
                 <img src={Gallery} alt="Gallery" style={{ width: '50%' }} />
-              </Button>
+              </StyledButton>
               <p
                 className="tile-label"
                 style={{ marginTop: '0.75em', marginBottom: 0 }}

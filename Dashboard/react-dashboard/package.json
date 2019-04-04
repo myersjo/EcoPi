@@ -4,10 +4,10 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.9.2",
+    "@material-ui/lab": "^3.0.0-alpha.30",
     "express": "^4.16.4",
     "http2": "^3.3.7",
     "moment": "^2.24.0",
-    
     "rc-progress": "^2.3.0",
     "react": "^16.8.3",
     "react-charts": "^2.0.0-alpha.12",

@@ -7,9 +7,10 @@ import openSocket from 'socket.io-client';
 import SwipeableViews from 'react-swipeable-views';
 
 //Screen imports
-import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
+import PreIncubationScreen from './../screens/preIncubationScreen/preIncubationScreen.jsx';
 import IncubationInProgressScreen from './../screens/incubationInProgressScreen/IncubationInProgressScreen.jsx';
 import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
+import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import LogScreen from './../screens/logScreen/LogScreen.jsx';
 
 const moment = require('moment');
@@ -100,7 +101,7 @@ class App extends Component {
             }}
           >
             {/* TODO: Will probably need to abstract out each screen, maybe even each tile within that. Just doing it all here for now*/}
-
+            <PreIncubationScreen />
             <IncubationInProgressScreen
               tempHumReading={this.state.reading}
               snapshot={this.state.snapshot}
