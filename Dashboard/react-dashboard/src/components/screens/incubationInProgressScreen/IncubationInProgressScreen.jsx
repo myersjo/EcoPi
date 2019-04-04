@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../tile/Tile';
+import Tile from '../../Tile/Tile';
 import FormInput from './../../formInput/FormInput.jsx';
 import Button from './../../button/Button.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';

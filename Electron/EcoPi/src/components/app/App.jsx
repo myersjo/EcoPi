@@ -17,6 +17,27 @@ import TimerSvg from './../../assets/placeholder-graphs/timer.svg';
 import ImageUploader from 'react-images-upload';
 
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
+const HOST = 'http://localhost';
+const PORT = 3030;
+const NAMESPACE = '/dashboard';
+
+const express = require('express');
+const app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+//doublecheck this is correct --- creates socket for 'http://localhost:3030/dashboard' ---- I do not think this is right
+var socket = io(HOST + ':' + PORT + '/' + NAMESPACE);
+socket.connect();
+// server.listen(port, () => console.log(`EcoPi Dashboard listening on port ${PORT}!`));
+server.listen(port, () =>
+  timestampPrint(`EcoPi Dashboard listening on port ${PORT}!`)
+);
+
+var timestampPrint = function(message) {
+  console.log(
+    '[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] ' + message + ' '
+  );
+};
 
 class App extends Component {
   state = {
@@ -34,6 +55,24 @@ class App extends Component {
       .then(data => this.setState({ data }))
       .catch(err => console.log(err));
     console.log('Fetched data from API.');
+
+    socket.on('connect', () => {
+      timestampPrint('Connected to server');
+    });
+
+    socket.on('disconnect', () => {
+      timestampPrint('Disconnected');
+    });
+
+    socket.on('new_snapshot', new_snapshot => {
+      json_content = JSON.parse(new_snapshot);
+      this.props.snapshot = json_content;
+    });
+
+    socket.on('new_temp_humidity_reading', reading => {
+      this.props.temp_humidity_reading = reading;
+      timestampPrint('New temperature and humidity readings received');
+    });
   }
 
   handleSlideChange = (_, slideNum) => {

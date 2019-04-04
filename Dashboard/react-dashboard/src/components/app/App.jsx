@@ -3,6 +3,7 @@ import './App.scss';
 import Dashboard from '../dashboard/Dashboard.jsx';
 import Navbar from '../navbar/Navbar.jsx';
 import Screen from '../screen/Screen.jsx';
+import openSocket from 'socket.io-client';
 import SwipeableViews from 'react-swipeable-views';
 
 //Screen imports
@@ -11,12 +12,27 @@ import IncubationInProgressScreen from './../screens/incubationInProgressScreen/
 import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
 import LogScreen from './../screens/logScreen/LogScreen.jsx';
 
+const moment = require('moment');
+
+const HOST = 'http://localhost';
+const PORT = 3030;
+const NAMESPACE = '/dashboard';
+
 const API = 'http://localhost:3030/api/v1.0/snapshot/';
+
+var timestampPrint = function(message) {
+  console.log(
+    '[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] ' + message + ' '
+  );
+};
 
 class App extends Component {
   state = {
     slideNum: 0,
-    data: {}
+    data: {},
+    reading: {},
+    snapshot: {},
+    socket: openSocket(HOST + ':' + PORT + '/' + NAMESPACE)
   };
 
   componentDidMount() {
@@ -29,6 +45,32 @@ class App extends Component {
       .then(data => this.setState({ data }))
       .catch(err => console.log(err));
     console.log('Fetched data from API.');
+
+    this.state.socket.on('connect', () => {
+      timestampPrint('Connected to server');
+    });
+
+    this.state.socket.on('disconnect', () => {
+      timestampPrint('Disconnected');
+    });
+
+    this.state.socket.on('new_snapshot', payload => {
+      this.setState({ snapshot: JSON.parse(payload) });
+      timestampPrint(
+        `New snapshot received from ${this.state.snapshot.timestamp}`
+      );
+    });
+
+    this.state.socket.on('new_temp_humidity_reading', payload => {
+      // Send down with props and update relevant component
+      this.setState({ reading: payload });
+      timestampPrint('New temperature and humidity readings received');
+      timestampPrint(`   Temperature: ${this.state.reading.temperature}`);
+      timestampPrint(`   Temperature: ${this.state.reading.humidity}`);
+    });
+    //Doublecheck this is necessary -------
+    var interval = { interval: 10000 };
+    this.state.socket.emit('start_incubation', interval);
   }
 
   handleSlideChange = (_, slideNum) => {
@@ -58,7 +100,11 @@ class App extends Component {
             }}
           >
             {/* TODO: Will probably need to abstract out each screen, maybe even each tile within that. Just doing it all here for now*/}
-            <IncubationInProgressScreen />
+
+            <IncubationInProgressScreen
+              tempHumReading={this.state.reading}
+              snapshot={this.state.snapshot}
+            />
             <UploadScreen />
             <LivestreamScreen />
             <LogScreen />
