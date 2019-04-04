@@ -10,60 +10,20 @@ import './IncubationInProgressScreen.scss';
 //Chart imports
 import { Chart } from 'react-charts';
 import Countdown1 from 'react-countdown-clock';
-import CircularProgressbar from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css'; //default styles
+import CircularProgressBar from './../../circularProgressBar/circularProgressBar.jsx';
 
 //Temporary graph images
-import TimerSvg from './../../../assets/placeholder-graphs/timer.svg';
 import ProgressBarSvg from './../../../assets/placeholder-graphs/progress-bar.svg';
-import LineGraphSVG from './../../../assets/placeholder-graphs/line-graph.svg';
 
 import PetriDish from './../../../assets/petriDish.png';
 import snapshotDummyData from './../../../assets/snapshot.json';
 
-// Global constants
-const months = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec'
-];
-
 //Globals
-let startTime, finishTime, startDate, finishDate;
 let snapshotData = snapshotDummyData;
 let incubationLength = 28800000;
 
 let unixTime = snapshotData.timestamp;
-
-// Start time
-let date = new Date(unixTime * 1000);
-let a = new Date(unixTime * 1000);
-let year = a.getFullYear();
-let month = months[a.getMonth()];
-date = a.getDate();
-let hour = a.getHours();
-let min = a.getMinutes();
-let sec = a.getSeconds();
-let time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
-console.log(time);
-
-// End time
-let endDate = new Date(unixTime * 1000 + incubationLength);
-let date1 = endDate.getDate();
-let month1 = months[endDate.getMonth()];
-let year1 = endDate.getFullYear();
-let hour1 = endDate.getHours();
-let min1 = endDate.getMinutes();
-let sec1 = endDate.getSeconds();
+console.table(snapshotData);
 
 // Temporary setup of snapshot variables
 let bacPer = snapshotData.image_analysis.BacteriaPercentage;
@@ -81,7 +41,7 @@ let time4 = time3 * 3600000;
 const data1 = [
   {
     time4: time4,
-    label: 'Temperature over Time',
+    label: 'Temperature',
     data: [
       { x: time4 - 7200000, y: 33 },
       { x: time4 - 5400000, y: 34 },
@@ -157,15 +117,31 @@ class IncubationInProgressScreen extends Component {
 
   handleTempHumUpdate() {}
 
+  constructor(props) {
+    super(props);
+
+    // Setup time values
+    let startUnix = new Date();
+    let finishUnix = Date.now() + incubationLength; // TODO: Change this incubationLength to state/prop
+    let finish = new Date(finishUnix);
+
+    this.state = {
+      startUnix: startUnix,
+      startTime: this.formatTime(startUnix),
+      startDate: this.formatDate(startUnix),
+      finishUnix: finishUnix,
+      finishTime: this.formatTime(finish),
+      finishDate: this.formatDate(finish),
+      completion: 0
+    };
+  }
+
   componentDidMount() {
-    let start = new Date();
-    console.log(start);
-    let finish = Date.now() + incubationLength;
-    finish = new Date(finish);
-    startTime = this.formatTime(start);
-    finishTime = this.formatTime(finish);
-    startDate = this.formatDate(start);
-    finishDate = this.formatDate(finish);
+    setInterval(() => {
+      this.setState({
+        completion: (Date.now() - this.state.startUnix) / incubationLength
+      });
+    }, 10000); //Update every 10s
   }
 
   render() {
@@ -203,23 +179,17 @@ class IncubationInProgressScreen extends Component {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              height: '30%',
-              maxHeight: '30%'
+              height: '40%',
+              paddingBottom: '1em'
             }}
           >
-            <CircularProgressbar
-              percentage={10}
+            <CircularProgressBar
+              percentage={this.state.completion}
               text={`${10}%`}
-              styles={{
-                root: {
-                  maxWidth: '100%',
-                  maxHeight: '100%'
-                }
-              }}
             />
           </div>
           <Countdown
-            date={Date.now() + incubationLength}
+            date={this.state.finishUnix}
             renderer={largeCountdownRenderer}
           />
 
@@ -228,23 +198,14 @@ class IncubationInProgressScreen extends Component {
             {/* Start Time */}
             <div className="two-col-info">
               <p className="tile-label">Start time:</p>
-              {/* <span className="medium-digit">13:43:12</span> */}
-              <span className="medium-digit">
-                {hour}:{min}:{sec}
-              </span>
-              <span className="small-digit">
-                {date} / {month} / {year}
-              </span>
+              <span className="medium-digit">{this.state.startTime}</span>
+              <span className="small-digit">{this.state.startDate}</span>
             </div>
             {/* Finish Time */}
             <div className="two-col-info">
               <p className="tile-label">Finish time:</p>
-              <span className="medium-digit">
-                {hour1}:{min1}:{sec1}
-              </span>
-              <span className="small-digit">
-                {date1} / {month1} / {year1}
-              </span>
+              <span className="medium-digit">{this.state.finishTime}</span>
+              <span className="small-digit">{this.state.finishDate}</span>
             </div>
           </div>
         </Tile>
@@ -324,24 +285,40 @@ class IncubationInProgressScreen extends Component {
           <h1 className="tile-heading">
             <span className="active-heading">Temperature</span> | Humidity
           </h1>
-          <div className="flex-row" style={{}}>
+          <div className="flex-row" style={{ height: '100%' }}>
             <div
               style={{
-                width: '500px',
-                height: '200px'
+                flex: 4,
+                height: '100%'
               }}
             >
               <Chart
                 data={data1}
+                dark
                 axes={[
-                  { primary: true, type: 'utc', position: 'bottom' },
+                  {
+                    primary: true,
+                    type: 'utc',
+                    position: 'bottom'
+                  },
                   { type: 'linear', position: 'left' }
                 ]}
+                getSeriesStyle={series => ({
+                  color: '#e7d622'
+                })}
+                primaryCursor
+                secondaryCursor
+                tooltip
               />
             </div>
             <div
               className="flex-col"
-              style={{ textAlign: 'left', margin: 'auto' }}
+              style={{
+                textAlign: 'left',
+                margin: 'auto',
+                flex: 1,
+                paddingLeft: '2em'
+              }}
             >
               <p className="tile-label">Current:</p>
               <span className="large-digit">{temperature}</span>
