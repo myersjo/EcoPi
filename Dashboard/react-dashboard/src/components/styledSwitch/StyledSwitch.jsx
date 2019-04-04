@@ -18,20 +18,21 @@ const styles = theme => ({
 });
 
 class StyledSwitch extends Component {
-  state = {
-    recordPhotos: true
-  };
+  // state = {
+  //   recordPhotos: true
+  // };
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.checked });
+    this.props.onChange(this.props.name, event.target.checked);
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, initial } = this.props;
 
     return (
       <Switch
-        checked={this.state.recordPhotos}
+        checked={initial}
         onChange={this.handleChange('recordPhotos')}
         value="recordPhotos"
         classes={{

@@ -33,7 +33,13 @@ class App extends Component {
     data: {},
     reading: {},
     snapshot: {},
-    socket: openSocket(HOST + ':' + PORT + '/' + NAMESPACE)
+    socket: openSocket(HOST + ':' + PORT + '/' + NAMESPACE),
+
+    // Incubation setting defaults:
+    incInProgress: false,
+    incubationLength: 8,
+    recordPhotos: true,
+    photoInterval: 30
   };
 
   componentDidMount() {
@@ -82,7 +88,18 @@ class App extends Component {
     this.setState({ value: index });
   };
 
+  handleIncSettingChange = (name, value) => {
+    this.setState({ [name]: value });
+  };
+
   render() {
+    const {
+      incInProgress,
+      incubationLength,
+      recordPhotos,
+      photoInterval
+    } = this.state;
+
     return (
       <div className="App">
         <Dashboard>
@@ -100,12 +117,22 @@ class App extends Component {
               gridColumn: '2/6'
             }}
           >
-            {/* TODO: Will probably need to abstract out each screen, maybe even each tile within that. Just doing it all here for now*/}
-            <PreIncubationScreen />
-            <IncubationInProgressScreen
-              tempHumReading={this.state.reading}
-              snapshot={this.state.snapshot}
-            />
+            {incInProgress ? (
+              <IncubationInProgressScreen
+                tempHumReading={this.state.reading}
+                snapshot={this.state.snapshot}
+                incubationLength={incubationLength}
+                recordPhotos={recordPhotos}
+                photoInterval={photoInterval}
+              />
+            ) : (
+              <PreIncubationScreen
+                onChange={this.handleIncSettingChange}
+                incubationLength={incubationLength}
+                recordPhotos={recordPhotos}
+                photoInterval={photoInterval}
+              />
+            )}
             <UploadScreen />
             <LivestreamScreen />
             <LogScreen />

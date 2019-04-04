@@ -29,10 +29,13 @@ class StyledStepper extends Component {
     this.state = {
       value: this.props.initial ? this.props.initial : 30
     };
+    // TODO: Is this next line needed
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange = (event, value) => {
+  handleChange = (_, value) => {
     this.setState({ value });
+    this.props.onChange(this.props.name, value);
   };
 
   render() {

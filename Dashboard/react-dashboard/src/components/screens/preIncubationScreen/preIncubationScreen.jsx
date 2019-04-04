@@ -7,7 +7,17 @@ import StyledSwitch from './../../styledSwitch/StyledSwitch.jsx';
 import StyledStepper from './../../styledStepper/StyledStepper.jsx';
 
 class PreIncubationScreen extends Component {
+  handleSettingChange = (name, value) => {
+    // this.setState({ value });
+    this.props.onChange(name, value);
+  };
+
+  handleIncubationStart = () => {
+    this.props.onChange('incInProgress', true);
+  };
+
   render() {
+    const { incubationLength, recordPhotos, photoInterval } = this.props;
     return (
       <Screen>
         <Tile
@@ -20,31 +30,41 @@ class PreIncubationScreen extends Component {
           <div className="flex-row" style={{ justifyContent: 'flex-start' }}>
             <p className="tile-label">Incubation Length:</p>
             <StyledStepper
+              name="incubationLength"
               width="50%"
               min={5}
               max={20}
               step={0.5}
-              initial={8}
+              initial={incubationLength}
               unit="hours"
+              onChange={this.handleSettingChange}
             />
           </div>
           <hr className="divider" />
           <div className="flex-row" style={{ justifyContent: 'flex-start' }}>
             <p className="tile-label">Record Photos:</p>
-            <StyledSwitch />
+            <StyledSwitch
+              name="recordPhotos"
+              onChange={this.handleSettingChange}
+              initial={recordPhotos}
+            />
           </div>
           <div className="flex-row" style={{ justifyContent: 'flex-start' }}>
             <p className="tile-label">Photo Interval:</p>
             <StyledStepper
+              name="photoInterval"
               width="50%"
               min={10}
               max={60}
               step={10}
               initial={30}
               unit="minutes"
+              onChange={this.handleSettingChange}
             />
           </div>
-          <StyledButton>Start Incubation</StyledButton>
+          <StyledButton onClick={this.handleIncubationStart}>
+            Start Incubation
+          </StyledButton>
         </Tile>
         {/* Metadata */}
         <Tile style={{ gridRow: '3/9', gridColumn: '3/4' }}>

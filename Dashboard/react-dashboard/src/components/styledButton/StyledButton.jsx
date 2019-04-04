@@ -30,7 +30,11 @@ function StyledButton(props) {
   }
 
   return (
-    <Button aria-label="Start incubation" className={classes.root}>
+    <Button
+      aria-label="Start incubation"
+      className={classes.root}
+      onClick={props.onClick}
+    >
       {props.children}
     </Button>
   );

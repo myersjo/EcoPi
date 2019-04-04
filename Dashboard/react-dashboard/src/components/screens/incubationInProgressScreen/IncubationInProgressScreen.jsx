@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Screen from '../../screen/Screen.jsx';
 import Tile from '../../tile/Tile';
 import FormInput from './../../formInput/FormInput.jsx';
@@ -20,8 +20,10 @@ import snapshotDummyData from './../../../assets/snapshot.json';
 
 //Globals
 let snapshotData = snapshotDummyData;
-let incubationLength = 28800000;
-let photoInterval = 1800000;
+
+// TODO: REMOVE THESE
+// let incubationLength = 28800000;
+// let photoInterval = 1800000;
 
 let unixTime = snapshotData.timestamp;
 console.table(snapshotData);
@@ -114,7 +116,7 @@ class IncubationInProgressScreen extends Component {
   handleNewSnapshot() {
     // TODO: Call function when snapshot is updated
     this.setState({
-      nextPhotoUnix: Date.now() + photoInterval,
+      nextPhotoUnix: Date.now() + this.state.photoInterval,
       photosCaptured: this.state.photosCaptured++
     });
   }
@@ -125,8 +127,10 @@ class IncubationInProgressScreen extends Component {
     super(props);
 
     // Setup time values
+    let incubationLength = props.incubationLength * 3600000; //Convert hours to unix
+    let photoInterval = props.photoInterval * 60000; //Convert mins to unix
     let startUnix = new Date();
-    let finishUnix = Date.now() + incubationLength; // TODO: Change this incubationLength to state/prop
+    let finishUnix = Date.now() + incubationLength;
     let finish = new Date(finishUnix);
 
     this.state = {
@@ -136,6 +140,7 @@ class IncubationInProgressScreen extends Component {
       finishUnix: finishUnix,
       finishTime: this.formatTime(finish),
       finishDate: this.formatDate(finish),
+      incubationLength: incubationLength,
       completion: 0,
       nextPhotoUnix: Date.now() + photoInterval,
       photosCaptured: 0,
@@ -147,7 +152,8 @@ class IncubationInProgressScreen extends Component {
     setInterval(() => {
       this.setState({
         completion:
-          ((Date.now() - this.state.startUnix) / incubationLength) * 100
+          ((Date.now() - this.state.startUnix) / this.state.incubationLength) *
+          100
       });
     }, 10000); //Update every 10s
   }
@@ -195,84 +201,101 @@ class IncubationInProgressScreen extends Component {
         </Tile>
         {/* Photo details */}
         <Tile style={{ gridRow: '1/7', textAlign: 'left' }}>
-          <h1 className="tile-heading">Photo Details:</h1>
-          <p className="tile-label" style={{ marginBottom: 0 }}>
-            Photos taken:
-          </p>
-          <p
-            className="large-digit"
-            style={{
-              marginTop: '-.4em',
-              marginBottom: '.25em',
-              marginRight: '.25em',
-              textAlign: 'right'
-            }}
-          >
-            {this.state.photosCaptured} / {this.state.totalPhotoCount}
-          </p>
-          <div style={{ width: '100%', height: 'auto' }}>
-            <Line
-              percent={
-                (this.state.photosCaptured / this.state.totalPhotoCount) * 100
-              }
-              strokeWidth="4"
-              strokeColor="#f00772"
-              trailWidth="4"
-              trailColor="#606875"
-            />
-          </div>
-          <hr className="divider" style={{ marginTop: '1em' }} />
-          <div className="two-col">
-            <div className="two-col-info">
-              <p className="tile-label">Interval:</p>
-              <span className="medium-digit">30 mins</span>
-            </div>
-            <div className="two-col-info">
-              <p className="tile-label">Next photo:</p>
-              <Countdown
-                date={this.state.nextPhotoUnix}
-                renderer={mediumCountdownRenderer}
-              />
-            </div>
-          </div>
-          <p className="tile-label">Latest photo:</p>
-          <div className="flex-row">
-            <img
-              src={PetriDish}
-              alt="petri dish"
+          {this.props.recordPhotos ? (
+            <Fragment>
+              <h1 className="tile-heading">Photo Details:</h1>
+              <p className="tile-label" style={{ marginBottom: 0 }}>
+                Photos taken:
+              </p>
+              <p
+                className="large-digit"
+                style={{
+                  marginTop: '-.4em',
+                  marginBottom: '.25em',
+                  marginRight: '.25em',
+                  textAlign: 'right'
+                }}
+              >
+                {this.state.photosCaptured} / {this.state.totalPhotoCount}
+              </p>
+              <div style={{ width: '100%', height: 'auto' }}>
+                <Line
+                  percent={
+                    (this.state.photosCaptured / this.state.totalPhotoCount) *
+                    100
+                  }
+                  strokeWidth="4"
+                  strokeColor="#f00772"
+                  trailWidth="4"
+                  trailColor="#606875"
+                />
+              </div>
+              <hr className="divider" style={{ marginTop: '1em' }} />
+              <div className="two-col">
+                <div className="two-col-info">
+                  <p className="tile-label">Interval:</p>
+                  <span className="medium-digit">30 mins</span>
+                </div>
+                <div className="two-col-info">
+                  <p className="tile-label">Next photo:</p>
+                  <Countdown
+                    date={this.state.nextPhotoUnix}
+                    renderer={mediumCountdownRenderer}
+                  />
+                </div>
+              </div>
+              <p className="tile-label">Latest photo:</p>
+              <div className="flex-row">
+                <img
+                  src={PetriDish}
+                  alt="petri dish"
+                  style={{
+                    width: '60%',
+                    maxWidth: '214px',
+                    maxHeight: '120px',
+                    // objectFit: "cover",
+                    border: '2px solid #606875',
+                    borderRadius: '2px',
+                    boxSizing: 'border-box'
+                  }}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    margin: 'auto'
+                  }}
+                >
+                  <StyledButton isDot size="small">
+                    <img src={Gallery} alt="Gallery" style={{ width: '50%' }} />
+                  </StyledButton>
+                  <p
+                    className="tile-label"
+                    style={{ marginTop: '0.75em', marginBottom: 0 }}
+                  >
+                    View all
+                    <br />
+                    photos
+                  </p>
+                </div>
+              </div>
+            </Fragment>
+          ) : (
+            <h1
+              className="tile-heading"
               style={{
-                width: '60%',
-                maxWidth: '214px',
-                maxHeight: '120px',
-                // objectFit: "cover",
-                border: '2px solid #606875',
-                borderRadius: '2px',
-                boxSizing: 'border-box'
-              }}
-            />
-            <div
-              style={{
+                alignSelf: 'center',
+                flex: 1,
                 display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                textAlign: 'center',
-                margin: 'auto'
+                alignItems: 'center'
               }}
             >
-              <StyledButton isDot size="small">
-                <img src={Gallery} alt="Gallery" style={{ width: '50%' }} />
-              </StyledButton>
-              <p
-                className="tile-label"
-                style={{ marginTop: '0.75em', marginBottom: 0 }}
-              >
-                View all
-                <br />
-                photos
-              </p>
-            </div>
-          </div>
+              Photos not being recorded.
+            </h1>
+          )}
         </Tile>
         {/* Temp/Humidity */}
         <Tile style={{ gridRow: '7/11', gridColumn: '1/3' }}>
@@ -368,7 +391,7 @@ class IncubationInProgressScreen extends Component {
           <hr className="divider" />
           <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
-              E-coli likelihood
+              E-coli likelihood:
             </p>
             <p
               className="large-digit"
