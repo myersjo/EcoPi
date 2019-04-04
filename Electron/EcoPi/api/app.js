@@ -3,7 +3,7 @@ const app = express()
 const fs = require('fs')
 const cors = require('cors');
 const moment = require('moment')
-var firebase = require("firebase");
+var admin = require("firebase-admin");
 
 
 const gcs = require('@google-cloud/storage');
@@ -31,18 +31,6 @@ admin.initializeApp({
   databaseURL: "https://testproject-34b05.firebaseio.com"
 });
 
-// Below was pre merge:
-// var config = {
-//   apiKey: "AIzaSyCfR3kTPh2XLQVeIergskkeCpdUG0JLcnM",
-//   authDomain: "testproject-34b05.firebaseapp.com",
-//   databaseURL: "https://testproject-34b05.firebaseio.com",
-//   projectId: "testproject-34b05",
-//   storageBucket: "gs://testproject-34b05.appspot.com/",
-//   messagingSenderId: "993848483238"
-// };
-// firebase.initializeApp(config);
-
-//firebase.storage();
 
 // server.listen(port, () => console.log(`EcoPi API listening on port ${port}!`));
 server.listen(port, () => timestampPrint(`EcoPi API listening on port ${port}!`));
@@ -66,11 +54,11 @@ app.post(apiPrefix + apiVersion + '/snapshot', jsonParser, function (req, res) {
 
   console.log(req.body);
   
-  var db = firebase.firestore();
+  var db = admin.firestore();
   var docRef=db.collection('snapshots').doc('snapshot');
   var setData=docRef.set(req.body);
  
-  var ref=fire.ref();
+  
   //var mountainsRef=ref.child("/ComputerVision/testImages/petriDish.png");
   fs.writeFile(tmpFileName, JSON.stringify(req.body), function (err) {
     if (err)
