@@ -72,8 +72,8 @@ class App extends Component {
       // Send down with props and update relevant component
       this.setState({ reading: payload });
       timestampPrint('New temperature and humidity readings received');
-      timestampPrint(`   Temperature: ${reading.temperature}`);
-      timestampPrint(`   Temperature: ${reading.humidity}`);
+      timestampPrint(`   Temperature: ${this.state.reading.temperature}`);
+      timestampPrint(`   Temperature: ${this.state.reading.humidity}`);
     });
 
     socket.connect(() => {
