@@ -135,7 +135,13 @@ class App extends Component {
             )}
             <UploadScreen />
             <LivestreamScreen />
-            <LogScreen />
+            <LogScreen
+              tempHumReading={this.state.reading}
+              snapshot={this.state.snapshot}
+              incubationLength={incubationLength}
+              recordPhotos={recordPhotos}
+              photoInterval={photoInterval}
+            />
             <Screen>Screen 5</Screen>
           </SwipeableViews>
         </Dashboard>
