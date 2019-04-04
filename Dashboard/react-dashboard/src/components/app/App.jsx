@@ -22,8 +22,6 @@ var io = require('socket.io')(server);
 const HOST = 'http://localhost';
 const PORT = 3030;
 const NAMESPACE = '/dashboard';
-let snapshot;
-let reading;
 //may not be necessary
 //server.listen(PORT, () => timestampPrint(`Dashboard listening on port ${PORT}!`));
 var socket = io(HOST + ':' + PORT + '/' + NAMESPACE);
@@ -39,7 +37,9 @@ var timestampPrint = function(message) {
 class App extends Component {
   state = {
     slideNum: 0,
-    data: {}
+    data: {},
+    reading: {},
+    snapshot: {}
   };
 
   componentDidMount() {
@@ -62,13 +62,15 @@ class App extends Component {
     });
 
     socket.on('new_snapshot', payload => {
-      snapshot = JSON.parse(payload);
-      timestampPrint(`New snapshot received from ${snapshot.timestamp}`);
+      this.setState({ snapshot: JSON.parse(payload) });
+      timestampPrint(
+        `New snapshot received from ${this.state.snapshot.timestamp}`
+      );
     });
 
     socket.on('new_temp_humidity_reading', payload => {
       // Send down with props and update relevant component
-      reading = payload;
+      this.setState({ reading: payload });
       timestampPrint('New temperature and humidity readings received');
       timestampPrint(`   Temperature: ${reading.temperature}`);
       timestampPrint(`   Temperature: ${reading.humidity}`);
@@ -110,9 +112,8 @@ class App extends Component {
           >
             {/* TODO: Will probably need to abstract out each screen, maybe even each tile within that. Just doing it all here for now*/}
             <IncubationInProgressScreen
-              temperature={reading.temperature}
-              humidity={reading.humidity}
-              snapshot={snapshot}
+              tempHumReading={this.state.reading}
+              snapshot={this.state.snapshot}
             />
             <Screen>
               <Tile style={{ gridRow: '1/6' }}>
