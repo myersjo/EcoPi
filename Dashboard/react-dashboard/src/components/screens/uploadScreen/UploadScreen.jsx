@@ -30,9 +30,9 @@ class UploadScreen extends Component {
         {/* Metadata */}
         <Tile style={{ gridRow: '3/9', gridColumn: '3/4' }}>
           <h1 className="tile-heading">Metadata:</h1>
-          <FormInput>Title</FormInput>
-          <FormInput>Location</FormInput>
-          <FormInput isMultiLine rows="6">
+          <FormInput isMultiLine={false}>Title</FormInput>
+          <FormInput isMultiLine={false}>Location</FormInput>
+          <FormInput isMultiLine rows={6}>
             Description
           </FormInput>
         </Tile>

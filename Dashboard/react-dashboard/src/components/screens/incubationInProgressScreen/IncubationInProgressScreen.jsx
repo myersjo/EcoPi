@@ -10,6 +10,7 @@ import './IncubationInProgressScreen.scss';
 //Chart imports
 import { Chart } from 'react-charts';
 import CircularProgressBar from './../../circularProgressBar/circularProgressBar.jsx';
+import { Line } from 'rc-progress';
 
 //Temporary graph images
 import ProgressBarSvg from './../../../assets/placeholder-graphs/progress-bar.svg';
@@ -20,6 +21,7 @@ import snapshotDummyData from './../../../assets/snapshot.json';
 //Globals
 let snapshotData = snapshotDummyData;
 let incubationLength = 28800000;
+let photoInterval = 1800000;
 
 let unixTime = snapshotData.timestamp;
 console.table(snapshotData);
@@ -110,7 +112,12 @@ class IncubationInProgressScreen extends Component {
   };
 
   handleNewSnapshot() {
-    // TODO: Update snapshot varables here.
+    // TODO: Call function when snapshot is updated
+    this.setState({
+      nextPhotoUnix: Date.now() + photoInterval,
+      photosCaptured: this.state.photosCaptured++
+    });
+    console.log('handleNewSnapshot');
     // Note (dont update time)
   }
 
@@ -131,7 +138,10 @@ class IncubationInProgressScreen extends Component {
       finishUnix: finishUnix,
       finishTime: this.formatTime(finish),
       finishDate: this.formatDate(finish),
-      completion: 0
+      completion: 0,
+      nextPhotoUnix: Date.now() + photoInterval,
+      photosCaptured: 0,
+      totalPhotoCount: Math.floor(incubationLength / photoInterval)
     };
   }
 
@@ -200,11 +210,21 @@ class IncubationInProgressScreen extends Component {
               textAlign: 'right'
             }}
           >
-            5 / 16
+            {this.state.photosCaptured} / {this.state.totalPhotoCount}
           </p>
-          <img src={ProgressBarSvg} alt="Timer" />
-          <hr className="divider" />
-          <div className="two-col" style={{ marginBottom: '1em' }}>
+          <div style={{ width: '100%', height: 'auto' }}>
+            <Line
+              percent={
+                (this.state.photosCaptured / this.state.totalPhotoCount) * 100
+              }
+              strokeWidth="4"
+              strokeColor="#f00772"
+              trailWidth="4"
+              trailColor="#606875"
+            />
+          </div>
+          <hr className="divider" style={{ marginTop: '1em' }} />
+          <div className="two-col">
             <div className="two-col-info">
               <p className="tile-label">Interval:</p>
               <span className="medium-digit">30 mins</span>
@@ -212,7 +232,7 @@ class IncubationInProgressScreen extends Component {
             <div className="two-col-info">
               <p className="tile-label">Next photo:</p>
               <Countdown
-                date={Date.now() + 1800000}
+                date={this.state.nextPhotoUnix}
                 renderer={mediumCountdownRenderer}
               />
             </div>
@@ -314,7 +334,7 @@ class IncubationInProgressScreen extends Component {
         {/* Analysis */}
         <Tile style={{ gridRow: '1/6', textAlign: 'left' }}>
           <h1 className="tile-heading">Analysis Details:</h1>
-          <div>
+          <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
               Number of regions:
             </p>
@@ -331,7 +351,7 @@ class IncubationInProgressScreen extends Component {
             </p>
           </div>
           <hr className="divider" />
-          <div>
+          <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
               Bacterial %:
             </p>
@@ -348,7 +368,7 @@ class IncubationInProgressScreen extends Component {
             </p>
           </div>
           <hr className="divider" />
-          <div>
+          <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
               E-coli likelihood
             </p>
@@ -365,28 +385,13 @@ class IncubationInProgressScreen extends Component {
               12%
             </p>
           </div>
-
-          {/* // //{" "}
-            // <ol>
-            //   //{" "}
-            //   <li>
-            //     // <p>No of regions: {noReg}</p>
-            //     //{" "}
-            //   </li>
-            //   //{" "}
-            //   <li>
-            //     // <p>Bacterial %: {bacPer} </p>
-            //     //{" "}
-            //   </li>
-            //   //{" "}
-            // </ol> */}
         </Tile>
         {/* Metadata */}
         <Tile style={{ gridRow: '6/11' }}>
           <h1 className="tile-heading">Metadata:</h1>
-          <FormInput>Title</FormInput>
-          <FormInput>Location</FormInput>
-          <FormInput isMultiLine rows="6">
+          <FormInput isMultiLine={false}>Title</FormInput>
+          <FormInput isMultiLine={false}>Location</FormInput>
+          <FormInput isMultiLine rows={5}>
             Description
           </FormInput>
         </Tile>
