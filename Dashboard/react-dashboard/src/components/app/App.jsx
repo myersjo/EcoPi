@@ -12,6 +12,7 @@ import IncubationInProgressScreen from './../screens/incubationInProgressScreen/
 import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import LogScreen from './../screens/logScreen/LogScreen.jsx';
+import snapshotDummyData from './../../assets/snapshot.json';
 
 const moment = require('moment');
 
@@ -34,7 +35,14 @@ class App extends Component {
     reading: {},
     snapshot: {},
     socket: openSocket(HOST + ':' + PORT + NAMESPACE),
-    snapshotHistory: [], // holds up to the last 6 snapshot values. Starts with none and grows
+    snapshotHistory: [
+      snapshotDummyData,
+      snapshotDummyData,
+      snapshotDummyData,
+      snapshotDummyData,
+      snapshotDummyData,
+      snapshotDummyData
+    ], // holds up to the last 6 snapshot values. Starts with none and grows
 
     // Incubation setting defaults:
     incInProgress: false,
