@@ -43,6 +43,16 @@ class App extends Component {
     photoInterval: 30
   };
 
+  handleSnapshotHistory(newSnapshot) {
+    // cannot use push or shift as they modify the state and state must be modified with setState, not directly
+    var newHistory = [newSnapshot].concat(this.state.snapshotHistory);
+    //ensure array never holds more than six previous snapshots
+    if (newHistory.length > 6) {
+      newHistory.pop();
+    }
+    this.setState({ snapshotHistory: newHistory });
+  }
+
   componentDidMount() {
     fetch(API, {
       headers: {
@@ -64,7 +74,7 @@ class App extends Component {
 
     this.state.socket.on('new_snapshot', payload => {
       this.setState({ snapshot: JSON.parse(payload) });
-      handleSnapshotHistory(this.state.snapshot);
+      this.handleSnapshotHistory(this.state.snapshot);
       timestampPrint(
         `New snapshot received from ${this.state.snapshot.timestamp}`
       );
@@ -93,16 +103,6 @@ class App extends Component {
   handleIncSettingChange = (name, value) => {
     this.setState({ [name]: value });
   };
-
-  handleSnapshotHistory(newSnapshot) {
-    // cannot use push or shift as they modify the state and state must be modified with setState, not directly
-    var newHistory = [newSnapshot].concat(this.state.snapshotHistory);
-    //ensure array never holds more than six previous snapshots
-    if (newHistory.length > 6) {
-      newHistory.pop();
-    }
-    this.setState({ snapshotHistory: newHistory });
-  }
 
   render() {
     const {

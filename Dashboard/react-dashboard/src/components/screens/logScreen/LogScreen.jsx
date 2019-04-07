@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../tile/Tile';
+import Tile from '../../Tile/Tile';
 import StyledButton from './../../styledButton/StyledButton.jsx';
 import Info from './../../../assets/icons/info.svg';
 import snapshotDummyData from './../../../assets/snapshot.json';
