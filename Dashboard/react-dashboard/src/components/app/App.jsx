@@ -33,7 +33,8 @@ class App extends Component {
     data: {},
     reading: {},
     snapshot: {},
-    socket: openSocket(HOST + ':' + PORT + '/' + NAMESPACE),
+    socket: openSocket(HOST + ':' + PORT + NAMESPACE),
+    snapshotHistory: [], // holds up to the last 6 snapshot values. Starts with none and grows
 
     // Incubation setting defaults:
     incInProgress: false,
@@ -63,6 +64,7 @@ class App extends Component {
 
     this.state.socket.on('new_snapshot', payload => {
       this.setState({ snapshot: JSON.parse(payload) });
+      handleSnaphotHistory(this.state.snapshot);
       timestampPrint(
         `New snapshot received from ${this.state.snapshot.timestamp}`
       );
@@ -91,6 +93,16 @@ class App extends Component {
   handleIncSettingChange = (name, value) => {
     this.setState({ [name]: value });
   };
+
+  handleSnaphotHistory(newSnapshot) {
+    // cannot use push or shift as they modify the state and state must be modified with setState, not directly
+    var newHistory = [newSnapshot].concat(this.state.snapshotHistory);
+    //ensure array never holds more than six previous snapshots
+    if (newHistory.length > 6) {
+      newHistory.pop();
+    }
+    this.setState({ snapshotHistory: newHistory });
+  }
 
   render() {
     const {
@@ -141,6 +153,7 @@ class App extends Component {
               incubationLength={incubationLength}
               recordPhotos={recordPhotos}
               photoInterval={photoInterval}
+              snapshotHistory={this.state.snapshotHistory}
             />
             <Screen>Screen 5</Screen>
           </SwipeableViews>
