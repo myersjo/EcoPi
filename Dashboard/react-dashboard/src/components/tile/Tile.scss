@@ -54,6 +54,26 @@
   grid-template-columns: repeat(2, 1fr);
   flex-grow: 1;
 }
+.three-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  flex-grow: 1;
+}
+
+.three-col-info {
+  text-align: left;
+  padding: 0.3em;
+  padding-left: 0.9em;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &:first-of-type {
+    border-right: 1px solid rgba($dark-blue2, 0.5);
+    padding-left: 0;
+  }
+}
 
 .two-col-info {
   text-align: left;
