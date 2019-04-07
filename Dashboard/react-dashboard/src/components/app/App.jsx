@@ -33,7 +33,7 @@ class App extends Component {
     data: {},
     reading: {},
     snapshot: {},
-    socket: openSocket(HOST + ':' + PORT + '/' + NAMESPACE),
+    socket: openSocket(HOST + ':' + PORT + NAMESPACE),
 
     // Incubation setting defaults:
     incInProgress: false,

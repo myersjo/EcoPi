@@ -33,7 +33,7 @@ def stopLivestream():
     timestampPrint('Livestream stopped')
 
 def isLivestreamActive():
-    status = subprocess.check_output(["sudo", "systemctl", "show", "-p", "SubState", "--value", "livestream.service"])
+    status = str(subprocess.check_output(["sudo", "systemctl", "show", "-p", "SubState", "--value", "livestream.service"]))
     return "running" in status
 
 # Stop livestream (if active), take picture, start livestream (if active)
@@ -42,11 +42,11 @@ def takeImage(imgPath):
     if livestreamActive():
         stopLivestream()
         
-    camera=PiCamera()
-    camera.start_preview()
-    sleep(5)
-    camera.capture(imgPath)
-    camera.stop_preview()
+  #  camera=PiCamera()
+  #  camera.start_preview()
+#    sleep(5)
+   # camera.capture(imgPath)
+    #camera.stop_preview()
 
     if livestreamActive:
         startLivestream()
@@ -59,7 +59,7 @@ def getSnapshot():
     result['timestamp'] = datetime.datetime.now().isoformat()
     result['sensors'] = getTempHumidity()
     result['image_analysis'] = ""  # TODO: getImageAnalysis(imgPath)
-    result['position'] = a # TODO: get position from image analysis
+    result['position'] = 0 # TODO: get position from image analysis
 
     with open(imgPath, "rb") as imgFile:
         result['image_base64'] = base64.b64encode(imgFile.read()).decode('utf-8')

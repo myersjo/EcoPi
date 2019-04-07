@@ -42,19 +42,14 @@ def countBacteria(img, pos):
    
    
     newSnapshot={}
-    
-    newSnapshot["timestamp"]=time.time()
-    newSnapshot["incubator_state"]={}
-    newSnapshot["incubator_state"]["temperature"]=-1
-    newSnapshot["incubator_state"]["humidity"]=-1
-    newSnapshot["image_analysis"]={}
+   
     greyImg = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # img=cv.GaussianBlur(img, (5, 5), 0)
 
-    retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    d,retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     
-    d, contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
    
     jsonList = []
     jsonList,bacteriaPercentage, numbRegions=parseContours(hierarchy, contours, greyImg)
@@ -62,11 +57,11 @@ def countBacteria(img, pos):
     # The contour with the most children is likely to be circle containing the bacteria
     # This loop finds this contour, and creates a list of the indices of these child contours (bacteria)
     if(numbRegions>0):
-        newSnapshot["image_analysis"]["BacteriaPercentage"]=bacteriaPercentage
-        newSnapshot["image_analysis"]["number_regions"]=numbRegions
-        newSnapshot["image_analysis"]["regions"]= jsonList
+        newSnapshot["BacteriaPercentage"]=bacteriaPercentage
+        newSnapshot["number_regions"]=numbRegions
+        newSnapshot["regions"]= jsonList
     else:
-        newSnapshot["image_analysis"]={}
+        newSnapshot={}
     
 
 
@@ -149,23 +144,6 @@ def parseContours(hierarchy, contours, greyImg):
     return jsonList, bacteriaPercentage, len(maxChildList)
 
 
-    
-
-
-
-def createJson(pos):
-    jsonData={}
-    jsonData["incubation_id"]=-1
-    jsonData["incubation_start_time"]=time.time()
-    jsonData["incubation_end_time"]=-1
-    jsonData["position"]=pos
-    jsonData["snapshots"]=[]
-    jsonData["notes"]=""
-    jsonData["dataAnalysis"]={}
-    jsonData["dataAnalysis"]["estimated_completion_time"]=-1
-    with open('./petriDish'+str(pos)+'.json', "w+") as jsonFile:
-        json.dump(jsonData, jsonFile)
-    return jsonData
 
 def visionAnalysis(imgName):
    
@@ -176,6 +154,8 @@ def visionAnalysis(imgName):
         img=readImage(imgName,pos)
         snapshot=countBacteria(img, pos)
         snapshotList[str(pos)]=snapshot
+    with open('imageAnalysis.json', 'w') as outfile:
+        json.dump(snapshotList, outfile)
     return snapshotList
         
    
