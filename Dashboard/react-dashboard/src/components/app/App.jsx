@@ -64,7 +64,7 @@ class App extends Component {
 
     this.state.socket.on('new_snapshot', payload => {
       this.setState({ snapshot: JSON.parse(payload) });
-      handleSnaphotHistory(this.state.snapshot);
+      handleSnapshotHistory(this.state.snapshot);
       timestampPrint(
         `New snapshot received from ${this.state.snapshot.timestamp}`
       );
@@ -94,7 +94,7 @@ class App extends Component {
     this.setState({ [name]: value });
   };
 
-  handleSnaphotHistory(newSnapshot) {
+  handleSnapshotHistory(newSnapshot) {
     // cannot use push or shift as they modify the state and state must be modified with setState, not directly
     var newHistory = [newSnapshot].concat(this.state.snapshotHistory);
     //ensure array never holds more than six previous snapshots
