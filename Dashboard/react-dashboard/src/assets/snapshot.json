@@ -6,7 +6,7 @@
   },
   "image_analysis": {
     "BacteriaPercentage": 0.845091304455262,
-    "number_regions": 55,
+    "number_regions": 66,
     "regions": [
       {
         "Contour ID": 53,
