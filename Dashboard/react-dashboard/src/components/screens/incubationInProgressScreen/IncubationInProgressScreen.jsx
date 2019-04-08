@@ -121,6 +121,26 @@ class IncubationInProgressScreen extends Component {
     });
   }
 
+  //takes a double temperature value and returns a new dummy temperature
+  //this gets called every second but we only want big increases over a few minute period
+  updateTemp(temp){
+    if (temp < 27) {
+      temp += 1+ Math.round(Math.random(),2)/60;
+    } else if (temp < 37) {
+      temp += Math.round(Math.random(), 2)/60;
+    } else if (temp>37) {
+      if (Math.random() < 0.25) {
+        temp += Math.round(Math.random(), 2)/60;
+      } else {
+        temp -=Math.round(Math.random()/2, 2)/60;
+      }
+    } else {
+      temp += .1/60;
+    }
+   
+    return temp;
+  }
+
   handleTempHumUpdate() {}
 
   constructor(props) {
