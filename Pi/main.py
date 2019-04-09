@@ -45,11 +45,13 @@ def takeImage(imgPath):
         stopLivestream()
         
     if USE_CAM:
-        camera=PiCamera()
-        camera.start_preview()
-        time.sleep(5)
-        camera.capture(imgPath)
-        camera.stop_preview()
+        # camera=PiCamera()
+        # camera.start_preview()
+        # time.sleep(5)
+        # camera.capture(imgPath)
+        # camera.stop_preview()
+        subprocess.call(["raspistill", "-o", imgPath, "-e", "png"])
+        time.sleep(1)
 
     if livestreamActive:
         startLivestream()
