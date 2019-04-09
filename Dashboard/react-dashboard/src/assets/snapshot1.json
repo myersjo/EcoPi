@@ -1,0 +1,25 @@
+{
+	"timestamp": 1553435279,
+	"incubator_state": {
+		"temperature": 34,
+		"humidity": 80
+	},
+	"image_analysis": {
+		"0": {
+            "BacteriaPercentage": 5.257,
+            "number_regions": 5
+        },
+		"1": {
+			"BacteriaPercentage": 5.395,
+			"number_regions": 6
+		},
+		"2": {
+            "BacteriaPercentage": 5.294,
+			"number_regions": 4
+        },
+		"3": {
+			"BacteriaPercentage": 0,
+			"number_regions": 0
+		}
+	}
+}
