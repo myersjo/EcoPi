@@ -26,7 +26,7 @@ const app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 //doublecheck this is correct --- creates socket for 'http://localhost:3030/dashboard' ---- I do not think this is right
-var socket = io(HOST + ':' + PORT + '/' + NAMESPACE);
+var socket = io(HOST + ':' + PORT  + NAMESPACE);
 socket.connect();
 // server.listen(port, () => console.log(`EcoPi Dashboard listening on port ${PORT}!`));
 server.listen(port, () =>

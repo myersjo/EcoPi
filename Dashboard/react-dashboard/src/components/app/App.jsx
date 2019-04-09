@@ -12,6 +12,7 @@ import IncubationInProgressScreen from './../screens/incubationInProgressScreen/
 import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import LogScreen from './../screens/logScreen/LogScreen.jsx';
+
 import snapshotDummyData from './../../assets/snapshot.json';
 
 const moment = require('moment');
@@ -35,14 +36,7 @@ class App extends Component {
     reading: {},
     snapshot: {},
     socket: openSocket(HOST + ':' + PORT + NAMESPACE),
-    snapshotHistory: [
-      snapshotDummyData,
-      snapshotDummyData,
-      snapshotDummyData,
-      snapshotDummyData,
-      snapshotDummyData,
-      snapshotDummyData
-    ], // holds up to the last 6 snapshot values. Starts with none and grows
+    snapshotHistory: [snapshotDummyData, snapshotDummyData, snapshotDummyData], // holds up to the last 6 snapshot values. Starts with none and grows
 
     // Incubation setting defaults:
     incInProgress: false,
@@ -55,9 +49,11 @@ class App extends Component {
     // cannot use push or shift as they modify the state and state must be modified with setState, not directly
     var newHistory = [newSnapshot].concat(this.state.snapshotHistory);
     //ensure array never holds more than six previous snapshots
+
     if (newHistory.length > 6) {
       newHistory.pop();
     }
+
     this.setState({ snapshotHistory: newHistory });
   }
 
@@ -83,6 +79,7 @@ class App extends Component {
     this.state.socket.on('new_snapshot', payload => {
       this.setState({ snapshot: JSON.parse(payload) });
       this.handleSnapshotHistory(this.state.snapshot);
+
       timestampPrint(
         `New snapshot received from ${this.state.snapshot.timestamp}`
       );

@@ -58,9 +58,7 @@ def getSnapshot():
     result = {}
     result['timestamp'] = datetime.datetime.now().isoformat()
     result['sensors'] = getTempHumidity()
-    result['image_analysis'] = ""  # TODO: getImageAnalysis(imgPath)
-    result['position'] = 0 # TODO: get position from image analysis
-
+    result['image_analysis'] = visionAnalysis(imgPath)
     with open(imgPath, "rb") as imgFile:
         result['image_base64'] = base64.b64encode(imgFile.read()).decode('utf-8')
 

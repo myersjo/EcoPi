@@ -46,7 +46,7 @@ def countBacteria(img, pos):
     greyImg = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # img=cv.GaussianBlur(img, (5, 5), 0)
 
-    d,retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     
     contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)

@@ -133,7 +133,7 @@ var pi = io.of(pi_ns)
 
     socket.on('new_snapshot', (data) => {
       timestampPrint('New snapshot received');
-
+     
       // Saving to file only used for testing
       let buff = Buffer.from(JSON.parse(data).image_base64, 'base64');
       var filename = 'picture' + moment().format('-YYMMDD-HHmmss') + '.png';

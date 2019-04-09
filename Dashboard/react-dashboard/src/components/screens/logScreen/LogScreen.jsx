@@ -3,123 +3,195 @@ import Screen from '../../screen/Screen.jsx';
 import Tile from '../../Tile/Tile';
 import StyledButton from './../../styledButton/StyledButton.jsx';
 import Info from './../../../assets/icons/info.svg';
-import snapshotDummyData from './../../../assets/snapshot.json';
 import PetriDish from './../../../assets/petriDish.png';
 
-let bacPer = snapshotDummyData.image_analysis.BacteriaPercentage;
-let noReg = snapshotDummyData.image_analysis.number_regions;
-let temperature = snapshotDummyData.incubator_state.temperature;
-let unixTime = snapshotDummyData.timestamp;
-
-
-
-
 class LogScreen extends Component {
-  handleNewSnapshot() {
-    // TODO: Update snapshot varables here.
-    // Note (dont update time)
-  }
+  handleNewSnapshot() {}
   constructor(props) {
     super(props);
     let current = '';
-    let test = [props[0],props[1],props[2],props[3],props[4],props[5]];
-
-    let firstSnap = props.snapshotHistory[0];
-    let secondSnap = props.snapshotHistory[1];
-    let thirdSnap = props.snapshotHistory[2];
-    let fourthSnap = props.snapshotHistory[3];
-    let fifthSnap = props.snapshotHistory[4];
-    let sixthSnap = props.snapshotHistory[5];
+    var snapshotList = new Array(6);
 
     //takes in all unix time from each snapshot, computes the date, is put into an array and then the states are updated.
-    let snapshotUnix = [firstSnap.timestamp, secondSnap.timestamp, thirdSnap.timestamp, fourthSnap.timestamp, fifthSnap.timestamp, sixthSnap.timestamp,]
+    let snapshotUnix = new Array(6);
+    let regionArray = new Array(6);
+    let bacArray = new Array(6);
+    let temperature = new Array(6);
+    let humidity = new Array(6);
     let snapshotTimes = [];
     let snapshotHMS = [];
-    for (var i=0;i<=5;i++)
-     {
-       var firstDate = new Date(snapshotUnix[i] * 1000);
-       var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-       var year = firstDate.getFullYear();
-       var month = months[firstDate.getMonth()];
-       var date = firstDate.getDate();
-       var hour = firstDate.getHours();
+    var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+
+    for (var i = 0; i < props.snapshotHistory.length; i++) {
+      console.log('boo' + i);
+      snapshotList[i] = props.snapshotHistory[i];
+      snapshotUnix[i] = snapshotList[i].timestamp;
+      var firstDate = new Date(snapshotUnix[i] * 1000);
+
+      var year = firstDate.getFullYear();
+      var month = months[firstDate.getMonth()];
+      var date = firstDate.getDate();
+      var hour = firstDate.getHours();
       var min = firstDate.getMinutes();
       var sec = firstDate.getSeconds();
-       var time = date + ' ' + month + ' ' + year;
-       var hms = hour + ':' + min + ':' + sec ;
-       snapshotTimes[i] = time;
-       snapshotHMS[i] = hms;
-     }
+      var time = date + ' ' + month + ' ' + year;
+      var hms = hour + ':' + min + ':' + sec;
+      snapshotTimes[i] = time;
+      snapshotHMS[i] = hms;
+      bacArray[i] = [
+        snapshotList[i].image_analysis[0].BacteriaPercentage,
+        snapshotList[i].image_analysis[1].BacteriaPercentage,
+        snapshotList[i].image_analysis[2].BacteriaPercentage,
+        snapshotList[i].image_analysis[3].BacteriaPercentage
+      ];
+      regionArray[i] = [
+        snapshotList[i].image_analysis[0].number_regions,
+        snapshotList[i].image_analysis[1].number_regions,
+        snapshotList[i].image_analysis[2].number_regions,
+        snapshotList[i].image_analysis[3].number_regions
+      ];
+      temperature[i] = snapshotList[i].incubator_state.temperature;
+      humidity[i] = snapshotList[i].incubator_state.humidity;
+    }
+    //I know this is a poor solution for when there is less than 6 snapshots, but code freeze is tomorrow and it doesnt really matter
+    for (var i = props.snapshotHistory.length; i < 6; i++) {
+      snapshotList[i] = [];
+      snapshotUnix[i] = 0;
+      var firstDate = new Date(snapshotUnix[i] * 1000);
 
-    //because theres 4 dishes per one snapshot, need 6 arrays of 4 for each bacteria percentage
-    let firstBacPer = [firstSnap.image_analysis[0].BacteriaPercentage, firstSnap.image_analysis[1].BacteriaPercentage,
-    firstSnap.image_analysis[2].BacteriaPercentage,firstSnap.image_analysis[3].BacteriaPercentage];
-    let secondBacPer = [secondSnap.image_analysis[0].BacteriaPercentage, secondSnap.image_analysis[1].BacteriaPercentage,
-    secondSnap.image_analysis[2].BacteriaPercentage,secondSnap.image_analysis[3].BacteriaPercentage];
-    let thirdBacPer = [thirdSnap.image_analysis[0].BacteriaPercentage, thirdSnap.image_analysis[1].BacteriaPercentage,
-    thirdSnap.image_analysis[2].BacteriaPercentage,thirdSnap.image_analysis[3].BacteriaPercentage];
-    let fourthBacPer = [fourthSnap.image_analysis[0].BacteriaPercentage, fourthSnap.image_analysis[1].BacteriaPercentage,
-    fourthSnap.image_analysis[2].BacteriaPercentage,fourthSnap.image_analysis[3].BacteriaPercentage];
-    let fifthBacPer = [fifthSnap.image_analysis[0].BacteriaPercentage, fifthSnap.image_analysis[1].BacteriaPercentage,
-    fifthSnap.image_analysis[2].BacteriaPercentage,fifthSnap.image_analysis[3].BacteriaPercentage];
-    let sixthBacPer = [sixthSnap.image_analysis[0].BacteriaPercentage, sixthSnap.image_analysis[1].BacteriaPercentage,
-    sixthSnap.image_analysis[2].BacteriaPercentage,sixthSnap.image_analysis[3].BacteriaPercentage];
+      var year = firstDate.getFullYear();
+      var month = months[firstDate.getMonth()];
+      var date = firstDate.getDate();
+      var hour = firstDate.getHours();
+      var min = firstDate.getMinutes();
+      var sec = firstDate.getSeconds();
+      var time = date + ' ' + month + ' ' + year;
+      var hms = hour + ':' + min + ':' + sec;
+      snapshotTimes[i] = time;
+      snapshotHMS[i] = hms;
+      bacArray[i] = [0, 0, 0, 0];
+      regionArray[i] = [0, 0, 0, 0];
+      temperature[i] = 0;
+      humidity[i] = 0;
+    }
 
-    //because theres 4 dishes per one snapshot, need 6 arrays of 4 for each no of dots
-    let firstRegions = [firstSnap.image_analysis[0].number_regions, firstSnap.image_analysis[1].number_regions,
-    firstSnap.image_analysis[2].number_regions,firstSnap.image_analysis[3].number_regions];
-    let secondRegions = [secondSnap.image_analysis[0].number_regions, secondSnap.image_analysis[1].number_regions,
-        secondSnap.image_analysis[2].number_regions,secondSnap.image_analysis[3].number_regions];
-    let thirdRegions = [thirdSnap.image_analysis[0].number_regions, thirdSnap.image_analysis[1].number_regions,
-        thirdSnap.image_analysis[2].number_regions,thirdSnap.image_analysis[3].number_regions];
-    let fourthRegions = [fourthSnap.image_analysis[0].number_regions, fourthSnap.image_analysis[1].number_regions,
-        fourthSnap.image_analysis[2].number_regions,fourthSnap.image_analysis[3].number_regions];
-    let fifthRegions = [fifthSnap.image_analysis[0].number_regions, fifthSnap.image_analysis[1].number_regions,
-        fifthSnap.image_analysis[2].number_regions,fifthSnap.image_analysis[3].number_regions];
-    let sixthRegions = [sixthSnap.image_analysis[0].number_regions, sixthSnap.image_analysis[1].number_regions,
-        sixthSnap.image_analysis[2].number_regions,sixthSnap.image_analysis[3].number_regions];
+    let incubationTime = [
+      '8 Hours',
+      '8 Hours',
+      '7.30 Hours',
+      '9 Hours',
+      '6 Hours',
+      '14 Hours'
+    ];
 
-
-
-    let incubationTime = ['8 Hours','8 Hours','7.30 Hours','9 Hours','6 Hours','14 Hours'];
-    let temperature = [firstSnap.incubator_state.temperature,secondSnap.incubator_state.temperature,thirdSnap.incubator_state.temperature,fourthSnap.incubator_state.temperature,
-      fifthSnap.incubator_state.temperature, sixthSnap.incubator_state.temperature];
-    let humidity = [firstSnap.incubator_state.humidity,secondSnap.incubator_state.humidity,thirdSnap.incubator_state.humidity,fourthSnap.incubator_state.humidity,
-      fifthSnap.incubator_state.humidity, sixthSnap.incubator_state.humidity];
     this.state = {
       current: '',
       snapshotTimes: snapshotTimes,
       snapshotHMS: snapshotHMS,
       //bacteriaPerc: bacteriaPerc,
-      firstBacPer: firstBacPer,
-      secondBacPer: secondBacPer,
-      thirdBacPer: thirdBacPer,
-      fourthBacPer: fourthBacPer,
-      fifthBacPer: fifthBacPer,
-      sixthBacPer: sixthBacPer,
-      firstBacPer: firstRegions,
-      secondRegions: secondRegions,
-      thirdRegions: thirdRegions,
-      fourthRegions: fourthRegions,
-      fifthRegions: fifthRegions,
-      sixthRegions: sixthRegions,
+      firstBacPer: bacArray[0],
+      secondBacPer: bacArray[1],
+      thirdBacPer: bacArray[2],
+      fourthBacPer: bacArray[3],
+      fifthBacPer: bacArray[4],
+      sixthBacPer: bacArray[5],
+      firstBacPer: regionArray[0],
+      secondRegions: regionArray[1],
+      thirdRegions: regionArray[2],
+      fourthRegions: regionArray[3],
+      fifthRegions: regionArray[4],
+      sixthRegions: regionArray[5],
       incubationTime: incubationTime,
       temperature: temperature,
       humidity: humidity
-
     };
     // This binding is necessary to make `this` work in the callback
     //handleClick for the 6 see more buttons
     //probably able to pass in arguments to make it one function but it kept breaking and not sure why
-    this.handleClick = this.handleClick.bind(this, snapshotTimes,  incubationTime, temperature, humidity, firstBacPer, snapshotHMS, firstRegions);
-    this.handleClick1 = this.handleClick1.bind(this, snapshotTimes,  incubationTime, temperature, humidity, secondBacPer, snapshotHMS, secondRegions);
-    this.handleClick2 = this.handleClick2.bind(this, snapshotTimes,  incubationTime, temperature, humidity, thirdBacPer, snapshotHMS, thirdRegions);
-    this.handleClick3 = this.handleClick3.bind(this, snapshotTimes,  incubationTime, temperature, humidity, fourthBacPer, snapshotHMS, fourthRegions);
-    this.handleClick4 = this.handleClick4.bind(this, snapshotTimes,  incubationTime, temperature, humidity, fifthBacPer, snapshotHMS, fifthRegions);
-    this.handleClick5 = this.handleClick5.bind(this, snapshotTimes,  incubationTime, temperature, humidity, sixthBacPer, snapshotHMS, sixthRegions);
+    this.handleClick = this.handleClick.bind(
+      this,
+      snapshotTimes,
+      incubationTime,
+      temperature,
+      humidity,
+      bacArray[0],
+      snapshotHMS,
+      regionArray[0]
+    );
+    this.handleClick1 = this.handleClick1.bind(
+      this,
+      snapshotTimes,
+      incubationTime,
+      temperature,
+      humidity,
+      bacArray[1],
+      snapshotHMS,
+      regionArray[1]
+    );
+    this.handleClick2 = this.handleClick2.bind(
+      this,
+      snapshotTimes,
+      incubationTime,
+      temperature,
+      humidity,
+      bacArray[2],
+      snapshotHMS,
+      regionArray[2]
+    );
+    this.handleClick3 = this.handleClick3.bind(
+      this,
+      snapshotTimes,
+      incubationTime,
+      temperature,
+      humidity,
+      bacArray[3],
+      snapshotHMS,
+      regionArray[3]
+    );
+    this.handleClick4 = this.handleClick4.bind(
+      this,
+      snapshotTimes,
+      incubationTime,
+      temperature,
+      humidity,
+      bacArray[4],
+      snapshotHMS,
+      regionArray[4]
+    );
+    this.handleClick5 = this.handleClick5.bind(
+      this,
+      snapshotTimes,
+      incubationTime,
+      temperature,
+      humidity,
+      bacArray[5],
+      snapshotHMS,
+      regionArray[5]
+    );
   }
 
-  handleClick = (snapshotTimes,  incubationTime, temperature, humidity, firstBacPer,snapshotHMS, firstRegions) => {
+  handleClick = (
+    snapshotTimes,
+    incubationTime,
+    temperature,
+    humidity,
+    firstBacPer,
+    snapshotHMS,
+    firstRegions
+  ) => {
     this.setState({
       current: snapshotTimes[0],
       currentHMS: snapshotHMS[0],
@@ -139,7 +211,15 @@ class LogScreen extends Component {
       currentHum: humidity[0]
     });
   };
-  handleClick1 = (snapshotTimes,  incubationTime, temperature, humidity, secondBacPer,snapshotHMS, secondRegions) => {
+  handleClick1 = (
+    snapshotTimes,
+    incubationTime,
+    temperature,
+    humidity,
+    secondBacPer,
+    snapshotHMS,
+    secondRegions
+  ) => {
     this.setState({
       current: snapshotTimes[1],
       currentHMS: snapshotHMS[1],
@@ -159,7 +239,15 @@ class LogScreen extends Component {
       currentHum: humidity[1]
     });
   };
-  handleClick2 = (snapshotTimes,  incubationTime, temperature, humidity, thirdBacPer,snapshotHMS, thirdRegions) => {
+  handleClick2 = (
+    snapshotTimes,
+    incubationTime,
+    temperature,
+    humidity,
+    thirdBacPer,
+    snapshotHMS,
+    thirdRegions
+  ) => {
     this.setState({
       current: snapshotTimes[2],
       currentHMS: snapshotHMS[1],
@@ -178,7 +266,15 @@ class LogScreen extends Component {
       currentHum: humidity[2]
     });
   };
-  handleClick3 = (snapshotTimes,  incubationTime, temperature, humidity, fourthBacPer,snapshotHMS, fourthRegions) => {
+  handleClick3 = (
+    snapshotTimes,
+    incubationTime,
+    temperature,
+    humidity,
+    fourthBacPer,
+    snapshotHMS,
+    fourthRegions
+  ) => {
     this.setState({
       current: snapshotTimes[3],
       currentHMS: snapshotHMS[1],
@@ -196,7 +292,15 @@ class LogScreen extends Component {
       currentHum: humidity[3]
     });
   };
-  handleClick4 = (snapshotTimes,  incubationTime, temperature, humidity,fifthBacPer,snapshotHMS, fifthRegions) => {
+  handleClick4 = (
+    snapshotTimes,
+    incubationTime,
+    temperature,
+    humidity,
+    fifthBacPer,
+    snapshotHMS,
+    fifthRegions
+  ) => {
     this.setState({
       current: snapshotTimes[4],
       currentHMS: snapshotHMS[1],
@@ -215,7 +319,15 @@ class LogScreen extends Component {
       currentHum: humidity[4]
     });
   };
-  handleClick5 = (snapshotTimes,  incubationTime, temperature, humidity, sixthBacPer,snapshotHMS,sixthRegions) => {
+  handleClick5 = (
+    snapshotTimes,
+    incubationTime,
+    temperature,
+    humidity,
+    sixthBacPer,
+    snapshotHMS,
+    sixthRegions
+  ) => {
     this.setState({
       current: snapshotTimes[5],
       currentHMS: snapshotHMS[1],
@@ -249,9 +361,7 @@ class LogScreen extends Component {
             </div>
             <div className="two-col-info">
               <p className="tile-label">Time of Snapshot:</p>
-              <span className="date-time">
-                {this.state.snapshotHMS[0]}
-              </span>
+              <span className="date-time">{this.state.snapshotHMS[0]}</span>
             </div>
           </div>
           <button
@@ -281,9 +391,7 @@ class LogScreen extends Component {
             </div>
             <div className="two-col-info">
               <p className="tile-label">Time of Snapshot:</p>
-              <span className="date-time">
-                {this.state.snapshotHMS[1]}
-              </span>
+              <span className="date-time">{this.state.snapshotHMS[1]}</span>
             </div>
           </div>
           <button
@@ -313,9 +421,7 @@ class LogScreen extends Component {
             </div>
             <div className="two-col-info">
               <p className="tile-label">Time of Snapshot:</p>
-              <span className="date-time">
-                {this.state.snapshotHMS[2]}
-              </span>
+              <span className="date-time">{this.state.snapshotHMS[2]}</span>
             </div>
           </div>
           <button
@@ -345,9 +451,7 @@ class LogScreen extends Component {
             </div>
             <div className="two-col-info">
               <p className="tile-label">Time of Snapshot:</p>
-              <span className="date-time">
-                {this.state.snapshotHMS[3]}
-              </span>
+              <span className="date-time">{this.state.snapshotHMS[3]}</span>
             </div>
           </div>
           <button
@@ -377,9 +481,7 @@ class LogScreen extends Component {
             </div>
             <div className="two-col-info">
               <p className="tile-label">Time of Snapshot:</p>
-              <span className="date-time">
-                {this.state.snapshotHMS[4]}
-              </span>
+              <span className="date-time">{this.state.snapshotHMS[4]}</span>
             </div>
           </div>
           <button
@@ -409,9 +511,7 @@ class LogScreen extends Component {
             </div>
             <div className="two-col-info">
               <p className="tile-label">Time of Snapshot:</p>
-              <span className="date-time">
-                {this.state.snapshotHMS[5]}
-              </span>
+              <span className="date-time">{this.state.snapshotHMS[5]}</span>
             </div>
           </div>
           <button
@@ -432,9 +532,17 @@ class LogScreen extends Component {
         </Tile>
 
         <Tile style={{ gridRow: '7/11', gridColumn: '1/4' }}>
-          <h1 className="tile-heading" style={{lineheight: 0, marginBottom: 0}} >Log Info:</h1>
+          <h1
+            className="tile-heading"
+            style={{ lineheight: 0, marginBottom: 0 }}
+          >
+            Log Info:
+          </h1>
           <div className="three-col">
-            <div className="three-col-info" style={{ justifyContent:'centre', alignItems: 'centre'}}>
+            <div
+              className="three-col-info"
+              style={{ justifyContent: 'centre', alignItems: 'centre' }}
+            >
               <p className="tile-label">Date of Incubation:</p>
               <span className="date-time">{this.state.current}</span>
               <div style={{ padding: '0.25em 0 0.25em 0' }}> </div>
@@ -448,9 +556,12 @@ class LogScreen extends Component {
               <p className="tile-label">Humidity:</p>
               <span className="bacteria">{this.state.currentHum}</span>
             </div>
-            <div className="three-col-info" style={{ justifyContent:'left', alignItems: 'left'}}>
-             <p className="tile-label">Percentage Of Bacteria (A):</p>
-             <span className="bacteria">{this.state.currentA}</span>
+            <div
+              className="three-col-info"
+              style={{ justifyContent: 'left', alignItems: 'left' }}
+            >
+              <p className="tile-label">Percentage Of Bacteria (A):</p>
+              <span className="bacteria">{this.state.currentA}</span>
               <div style={{ padding: '0.25em 0 0.25em 0' }}> </div>
               <p className="tile-label">Percentage Of Bacteria (B):</p>
               <span className="bacteria">{this.state.currentB}</span>
@@ -461,9 +572,12 @@ class LogScreen extends Component {
               <p className="tile-label">Percentage Of Bacteria (D):</p>
               <span className="bacteria">{this.state.currentD}</span>
             </div>
-            <div className="three-col-info" style={{ justifyContent:'left', alignItems: 'left'}}>
-             <p className="tile-label">No of Dots (A):</p>
-             <span className="bacteria">{this.state.currentRegA}</span>
+            <div
+              className="three-col-info"
+              style={{ justifyContent: 'left', alignItems: 'left' }}
+            >
+              <p className="tile-label">No of Dots (A):</p>
+              <span className="bacteria">{this.state.currentRegA}</span>
               <div style={{ padding: '0.25em 0 0.25em 0' }}> </div>
               <p className="tile-label">No of Dots (B):</p>
               <span className="bacteria">{this.state.currentRegB}</span>
@@ -475,7 +589,6 @@ class LogScreen extends Component {
               <span className="bacteria">{this.state.currentRegD}</span>
             </div>
           </div>
-
         </Tile>
       </Screen>
     );
