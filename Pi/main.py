@@ -45,11 +45,13 @@ def takeImage(imgPath):
         stopLivestream()
         
     if USE_CAM:
-        camera=PiCamera()
-        camera.start_preview()
-        sleep(5)
-        camera.capture(imgPath)
-        camera.stop_preview()
+        # camera=PiCamera()
+        # camera.start_preview()
+        # time.sleep(5)
+        # camera.capture(imgPath)
+        # camera.stop_preview()
+        subprocess.call(["raspistill", "-o", imgPath, "-e", "png"])
+        time.sleep(1)
 
     if livestreamActive:
         startLivestream()
@@ -57,7 +59,8 @@ def takeImage(imgPath):
 #  Analyse image, get temp and humidity, return results
 def getSnapshot():
     imgPath = TMP_IMG_PATH
-    # takeImage(imgPath)
+    if USE_CAM:
+        takeImage(imgPath)
     result = {}
     result['timestamp'] = datetime.datetime.now().isoformat()
     result['sensors'] = getTempHumidity()
