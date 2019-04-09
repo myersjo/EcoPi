@@ -4,12 +4,14 @@ import time, datetime
 import base64
 import subprocess
 import json
+from picamera import PiCamera
 
 HOST = "http://localhost"
 PORT = 3030
 NAMESPACE = "/pi"
 TMP_IMG_PATH = './picture.png'
-LIVESTREAM_SERVICE_NAME = 'livestream.service'
+LIVESTREAM_SERVICE_NAME = 'uv4l_raspicam.service'
+USE_CAM = True
 
 sio = socketio.Client()
 
@@ -20,7 +22,7 @@ def getTempHumidity():
     # Read temperature and humidity from sensor and return results
     result = {}
     result['timestamp'] = datetime.datetime.now().isoformat()
-    result['temperature'] = 37  # replace with actual reading
+    result['temperature'] = 21  # replace with actual reading
     result['humidity'] = 80
     return result
 
@@ -29,11 +31,11 @@ def startLivestream():
     timestampPrint('Livestream started')
 
 def stopLivestream():
-    subprocess.call(["sudo", "systemctl", "stop", "livestream.service"])
+    subprocess.call(["sudo", "systemctl", "stop", LIVESTREAM_SERVICE_NAME])
     timestampPrint('Livestream stopped')
 
 def isLivestreamActive():
-    status = str(subprocess.check_output(["sudo", "systemctl", "show", "-p", "SubState", "--value", "livestream.service"]))
+    status = str(subprocess.check_output(["sudo", "systemctl", "show", "-p", "SubState", "--value", LIVESTREAM_SERVICE_NAME]))
     return "running" in status
 
 # Stop livestream (if active), take picture, start livestream (if active)
@@ -42,11 +44,12 @@ def takeImage(imgPath):
     if livestreamActive():
         stopLivestream()
         
-  #  camera=PiCamera()
-  #  camera.start_preview()
-#    sleep(5)
-   # camera.capture(imgPath)
-    #camera.stop_preview()
+    if USE_CAM:
+        camera=PiCamera()
+        camera.start_preview()
+        sleep(5)
+        camera.capture(imgPath)
+        camera.stop_preview()
 
     if livestreamActive:
         startLivestream()
