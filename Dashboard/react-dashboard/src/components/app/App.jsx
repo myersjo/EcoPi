@@ -14,6 +14,12 @@ import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import LogScreen from './../screens/logScreen/LogScreen.jsx';
 
 import snapshotDummyData from './../../assets/snapshot.json';
+import snapshotDummyData1 from './../../assets/snapshot1.json';
+import snapshotDummyData2 from './../../assets/snapshot2.json';
+import snapshotDummyData3 from './../../assets/snapshot3.json';
+import snapshotDummyData4 from './../../assets/snapshot4.json';
+import snapshotDummyData5 from './../../assets/snapshot5.json';
+import snapshotDummyData6 from './../../assets/snapshot6.json';
 
 const moment = require('moment');
 
@@ -34,9 +40,9 @@ class App extends Component {
     slideNum: 0,
     data: {},
     reading: {},
-    snapshot: {},
+    snapshot: snapshotDummyData1,
     socket: openSocket(HOST + ':' + PORT + NAMESPACE),
-    snapshotHistory: [snapshotDummyData, snapshotDummyData, snapshotDummyData], // holds up to the last 6 snapshot values. Starts with none and grows
+    snapshotHistory: [snapshotDummyData1, snapshotDummyData2, snapshotDummyData3, snapshotDummyData4, snapshotDummyData5, snapshotDummyData6], // holds up to the last 6 snapshot values. Starts with none and grows
 
     // Incubation setting defaults:
     incInProgress: false,

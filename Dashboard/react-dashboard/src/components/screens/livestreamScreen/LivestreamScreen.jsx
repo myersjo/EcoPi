@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../Tile/Tile';
+import Tile from '../../tile/Tile';
 import './LivestreamScreen.scss';
 
 class LivestreamScreen extends Component {

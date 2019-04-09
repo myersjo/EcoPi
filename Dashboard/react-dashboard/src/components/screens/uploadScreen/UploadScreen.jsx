@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../Tile/Tile';
+import Tile from '../../tile/Tile';
 import FormInput from './../../formInput/FormInput.jsx';
 import Uploadimg from './../../uploadimg/Uploadimg.jsx';
 

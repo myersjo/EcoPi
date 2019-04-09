@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../Tile/Tile';
+import Tile from '../../tile/Tile';
 import FormInput from './../../formInput/FormInput.jsx';
 import StyledButton from './../../styledButton/StyledButton.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';
@@ -46,14 +46,55 @@ const data1 = [
     time4: time4,
     label: 'Temperature',
     data: [
-      { x: time4 - 7200000, y: 33 },
-      { x: time4 - 5400000, y: 34 },
-      { x: time4 - 3600000, y: 34 },
-      { x: time4 - 1800000, y: 34 },
+      { x: time4 - 240000, y: 33 },
+      { x: time4 - 180000, y: 34 },
+      { x: time4 - 120000, y: 34 },
+      { x: time4 - 60000, y: 34 },
       { x: time4, y: 35 }
     ]
   }
 ];
+// const tempInterval = 2;
+// const data1 = [
+//   {
+//     time4: time4,
+//     label: 'temperature',
+//     data: [
+//       { x: tempInterval, y: 1 },
+//       { x: tempInterval+1, y: 1.5 }
+//
+//     ]
+//   }
+// ];
+
+const axes = [
+  {
+    primary: true,
+    type: 'utc',
+    position: 'bottom'
+  },
+  { type: 'linear', position: 'left' }
+];
+
+
+//takes a double temperature value and returns a new dummy temperature
+//this gets called every second but we only want big increases over a few minute period
+function updateTemp(temp){
+  if (temp < 27) {
+    temp += 1+ Math.round(Math.random(),2)/60;
+  } else if (temp < 37) {
+    temp += Math.round(Math.random(), 2)/60;
+  } else if (temp>37) {
+    if (Math.random() < 0.25) {
+      temp += Math.round(Math.random(), 2)/60;
+    } else {
+      temp -=Math.round(Math.random()/2, 2)/60;
+    }
+  } else {
+    temp += .1/60;
+  }
+  return Math.round(temp * 100) / 100;
+};
 
 // Renderer callback with condition
 const largeCountdownRenderer = ({ hours, minutes, seconds, completed }) => {
@@ -119,27 +160,7 @@ class IncubationInProgressScreen extends Component {
       nextPhotoUnix: Date.now() + this.state.photoInterval,
       photosCaptured: this.state.photosCaptured++
     });
-  }
-
-  //takes a double temperature value and returns a new dummy temperature
-  //this gets called every second but we only want big increases over a few minute period
-  updateTemp(temp){
-    if (temp < 27) {
-      temp += 1+ Math.round(Math.random(),2)/60;
-    } else if (temp < 37) {
-      temp += Math.round(Math.random(), 2)/60;
-    } else if (temp>37) {
-      if (Math.random() < 0.25) {
-        temp += Math.round(Math.random(), 2)/60;
-      } else {
-        temp -=Math.round(Math.random()/2, 2)/60;
-      }
-    } else {
-      temp += .1/60;
-    }
-   
-    return temp;
-  }
+  };
 
   handleTempHumUpdate() {}
 
@@ -153,6 +174,7 @@ class IncubationInProgressScreen extends Component {
     let finishUnix = Date.now() + incubationLength;
     let finish = new Date(finishUnix);
 
+    let snapshotOne = props.snapshot;
     this.state = {
       startUnix: startUnix,
       startTime: this.formatTime(startUnix),
@@ -164,10 +186,23 @@ class IncubationInProgressScreen extends Component {
       completion: 0,
       nextPhotoUnix: Date.now() + photoInterval,
       photosCaptured: 0,
-      totalPhotoCount: Math.floor(incubationLength / photoInterval)
+      totalPhotoCount: Math.floor(incubationLength / photoInterval),
+
+      temperatureData: data1,
+      axesData: axes,
+      bacPerA: snapshotOne.image_analysis[0].BacteriaPercentage,
+      bacPerB: snapshotOne.image_analysis[1].BacteriaPercentage,
+      bacPerC: snapshotOne.image_analysis[2].BacteriaPercentage,
+      bacPerD: snapshotOne.image_analysis[3].BacteriaPercentage,
+
+      noRegA: snapshotOne.image_analysis[0].number_regions,
+      noRegB: snapshotOne.image_analysis[1].number_regions,
+      noRegC: snapshotOne.image_analysis[2].number_regions,
+      noRegD: snapshotOne.image_analysis[3].number_regions
+
+
     };
   }
-
   componentDidMount() {
     setInterval(() => {
       this.setState({
@@ -175,8 +210,33 @@ class IncubationInProgressScreen extends Component {
           ((Date.now() - this.state.startUnix) / this.state.incubationLength) *
           100
       });
-    }, 10000); //Update every 10s
-  }
+    }, 10000);
+  } //Update every 10s
+
+  //   console.log("TEST");
+  //   setInterval( () => {
+  //     let lastTime = data1[0].data[data1[0].data.length - 1].x;
+  //     let newTemp = updateTemp(data1[0].data[data1[0].data.length - 1].y);
+  //     data1[0].data = [...data1[0].data,{ x: lastTime + tempInterval, y: newTemp }];
+  //     if (axes[0].type == 'utc'){
+  //       axes[0].type= 'linear';
+  //     }
+  //     else axes[0].type= 'utc';
+  //     if (data1[0].label == 'temperature'){
+  //       data1[0].label= 'xxx';
+  //     }
+  //     else data1[0].label= 'temperature';
+  //     let test = data1[0];
+  //     // console.log(data1[0].data);
+  //     this.setState({
+  //         temperatureData: data1,
+  //         currentTemp: newTemp,
+  //         axesData: axes
+  //     })
+  //     console.log(data1);
+  //     console.log(this.state.axesData);
+  //   } , 1000);
+  // }
 
   render() {
     return (
@@ -320,7 +380,7 @@ class IncubationInProgressScreen extends Component {
         {/* Temp/Humidity */}
         <Tile style={{ gridRow: '7/11', gridColumn: '1/3' }}>
           <h1 className="tile-heading">
-            <span className="active-heading">Temperature</span> | Humidity
+            Temperature
           </h1>
           <div className="flex-row" style={{ height: '100%' }}>
             <div
@@ -332,14 +392,7 @@ class IncubationInProgressScreen extends Component {
               <Chart
                 data={data1}
                 dark
-                axes={[
-                  {
-                    primary: true,
-                    type: 'utc',
-                    position: 'bottom'
-                  },
-                  { type: 'linear', position: 'left' }
-                ]}
+                axes={axes}
                 getSeriesStyle={series => ({
                   color: '#e7d622'
                 })}
@@ -375,56 +428,39 @@ class IncubationInProgressScreen extends Component {
         {/* Analysis */}
         <Tile style={{ gridRow: '1/6', textAlign: 'left' }}>
           <h1 className="tile-heading">Analysis Details:</h1>
-          <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
               Number of regions:
             </p>
-            <p
-              className="large-digit"
-              style={{
-                marginTop: '-.4em',
-                marginBottom: '.25em',
-                marginRight: '.25em',
-                textAlign: 'right'
-              }}
-            >
-              {noReg}
-            </p>
+            <div className="four-col" style={{  }}>
+            <p> A: {this.state.noRegA} </p>
+            <p> B: {this.state.noRegB} </p>
+            <p> C: {this.state.noRegC} </p>
+            <p> D: {this.state.noRegD} </p>
+
           </div>
           <hr className="divider" />
           <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
               Bacterial %:
             </p>
-            <p
-              className="large-digit"
-              style={{
-                marginTop: '-.4em',
-                marginBottom: '.25em',
-                marginRight: '.25em',
-                textAlign: 'right'
-              }}
-            >
-              {Math.floor(bacPer * 100) / 100}%
-            </p>
+            <div className="four-col" style={{  }}>
+            <p> A: {Math.floor(this.state.bacPerA * 100) / 100}% </p>
+            <p> B: {Math.floor(this.state.bacPerB * 100) / 100}% </p>
+            <p> C: {Math.floor(this.state.bacPerC * 100) / 100}% </p>
+            <p> D: {Math.floor(this.state.bacPerD * 100) / 100}% </p>
+            </div>
           </div>
           <hr className="divider" />
           <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
               E-coli likelihood:
             </p>
-            <p
-              className="large-digit"
-              style={{
-                marginTop: '-.4em',
-                marginBottom: '.25em',
-                marginRight: '.25em',
-                textAlign: 'right',
-                color: '#00d7c2'
-              }}
-            >
-              12%
-            </p>
+            <div className="four-col" style={{  }}>
+            <p> A: 5% </p>
+            <p> B: 10% </p>
+            <p> C: 10% </p>
+            <p> D: 0% </p>
+            </div>
           </div>
         </Tile>
         {/* Metadata */}
