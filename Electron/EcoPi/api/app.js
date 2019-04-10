@@ -136,7 +136,7 @@ var pi = io.of(pi_ns)
      
       // Saving to file only used for testing
       let buff = Buffer.from(JSON.parse(data).image_base64, 'base64');
-      var filename = 'picture' + moment().format('-YYMMDD-HHmmss') + '.png';
+      var filename = 'picture' + moment().format('-YYMMDD-HHmmss') + '.jpg';
       fs.writeFile(filename, buff, function (err) {
         if (err)
           timestampPrint('Error saving image: ' + err);

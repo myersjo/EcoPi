@@ -50,7 +50,8 @@ def takeImage(imgPath):
         # time.sleep(5)
         # camera.capture(imgPath)
         # camera.stop_preview()
-        subprocess.call(["raspistill", "-o", imgPath, "-e", "png"])
+        subprocess.call(["sudo", "rm", imgPath])
+        subprocess.call(["raspistill", "-o", imgPath])
         time.sleep(1)
 
     if livestreamActive:
