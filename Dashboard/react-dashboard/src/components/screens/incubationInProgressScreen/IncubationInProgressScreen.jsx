@@ -46,7 +46,7 @@ const data1 = [
     time4: time4,
     label: 'Temperature',
     data: [
-      { x: time4 - 240000, y: 33 },
+      { x: time4 - 240000, y: 23 },
       { x: time4 - 180000, y: 34 },
       { x: time4 - 120000, y: 34 },
       { x: time4 - 60000, y: 34 },
@@ -76,25 +76,24 @@ const axes = [
   { type: 'linear', position: 'left' }
 ];
 
-
 //takes a double temperature value and returns a new dummy temperature
 //this gets called every second but we only want big increases over a few minute period
-function updateTemp(temp){
+function updateTemp(temp) {
   if (temp < 27) {
-    temp += 1+ Math.round(Math.random(),2)/60;
+    temp += 1 + Math.round(Math.random(), 2) / 60;
   } else if (temp < 37) {
-    temp += Math.round(Math.random(), 2)/60;
-  } else if (temp>37) {
+    temp += Math.round(Math.random(), 2) / 60;
+  } else if (temp > 37) {
     if (Math.random() < 0.25) {
-      temp += Math.round(Math.random(), 2)/60;
+      temp += Math.round(Math.random(), 2) / 60;
     } else {
-      temp -=Math.round(Math.random()/2, 2)/60;
+      temp -= Math.round(Math.random() / 2, 2) / 60;
     }
   } else {
-    temp += .1/60;
+    temp += 0.1 / 60;
   }
   return Math.round(temp * 100) / 100;
-};
+}
 
 // Renderer callback with condition
 const largeCountdownRenderer = ({ hours, minutes, seconds, completed }) => {
@@ -160,7 +159,7 @@ class IncubationInProgressScreen extends Component {
       nextPhotoUnix: Date.now() + this.state.photoInterval,
       photosCaptured: this.state.photosCaptured++
     });
-  };
+  }
 
   handleTempHumUpdate() {}
 
@@ -199,16 +198,16 @@ class IncubationInProgressScreen extends Component {
       noRegB: snapshotOne.image_analysis[1].number_regions,
       noRegC: snapshotOne.image_analysis[2].number_regions,
       noRegD: snapshotOne.image_analysis[3].number_regions
-
-
     };
   }
   componentDidMount() {
     setInterval(() => {
+      let newTemp = updateTemp(data1[0].data[0].y);
       this.setState({
         completion:
           ((Date.now() - this.state.startUnix) / this.state.incubationLength) *
-          100
+          100,
+        currentTemp: newTemp
       });
     }, 10000);
   } //Update every 10s
@@ -379,9 +378,7 @@ class IncubationInProgressScreen extends Component {
         </Tile>
         {/* Temp/Humidity */}
         <Tile style={{ gridRow: '7/11', gridColumn: '1/3' }}>
-          <h1 className="tile-heading">
-            Temperature
-          </h1>
+          <h1 className="tile-heading">Temperature</h1>
           <div className="flex-row" style={{ height: '100%' }}>
             <div
               style={{
@@ -411,15 +408,15 @@ class IncubationInProgressScreen extends Component {
               }}
             >
               <p className="tile-label">Current:</p>
-              <span className="large-digit">{temperature}</span>
+              <span className="large-digit">{this.state.currentTemp}</span>
               <div style={{ display: 'flex' }}>
                 <div className="small-readout">
                   <p className="tile-label">High:</p>
-                  <span className="medium-digit">{temperature}</span>
+                  <span className="medium-digit">{38}</span>
                 </div>
                 <div className="small-readout">
                   <p className="tile-label">Low:</p>
-                  <span className="medium-digit">{temperature}</span>
+                  <span className="medium-digit">{15}</span>
                 </div>
               </div>
             </div>
@@ -428,26 +425,25 @@ class IncubationInProgressScreen extends Component {
         {/* Analysis */}
         <Tile style={{ gridRow: '1/6', textAlign: 'left' }}>
           <h1 className="tile-heading">Analysis Details:</h1>
-            <p className="tile-label" style={{ marginBottom: 0 }}>
-              Number of regions:
-            </p>
-            <div className="four-col" style={{  }}>
+          <p className="tile-label" style={{ marginBottom: 0 }}>
+            Number of regions:
+          </p>
+          <div className="four-col" style={{}}>
             <p> A: {this.state.noRegA} </p>
             <p> B: {this.state.noRegB} </p>
             <p> C: {this.state.noRegC} </p>
             <p> D: {this.state.noRegD} </p>
-
           </div>
           <hr className="divider" />
           <div style={{ padding: '0.25em 0 0.25em 0' }}>
             <p className="tile-label" style={{ marginBottom: 0 }}>
               Bacterial %:
             </p>
-            <div className="four-col" style={{  }}>
-            <p> A: {Math.floor(this.state.bacPerA * 100) / 100}% </p>
-            <p> B: {Math.floor(this.state.bacPerB * 100) / 100}% </p>
-            <p> C: {Math.floor(this.state.bacPerC * 100) / 100}% </p>
-            <p> D: {Math.floor(this.state.bacPerD * 100) / 100}% </p>
+            <div className="four-col" style={{}}>
+              <p> A: {Math.floor(this.state.bacPerA * 100) / 100}% </p>
+              <p> B: {Math.floor(this.state.bacPerB * 100) / 100}% </p>
+              <p> C: {Math.floor(this.state.bacPerC * 100) / 100}% </p>
+              <p> D: {Math.floor(this.state.bacPerD * 100) / 100}% </p>
             </div>
           </div>
           <hr className="divider" />
@@ -455,11 +451,11 @@ class IncubationInProgressScreen extends Component {
             <p className="tile-label" style={{ marginBottom: 0 }}>
               E-coli likelihood:
             </p>
-            <div className="four-col" style={{  }}>
-            <p> A: 5% </p>
-            <p> B: 10% </p>
-            <p> C: 10% </p>
-            <p> D: 0% </p>
+            <div className="four-col" style={{}}>
+              <p> A: 5% </p>
+              <p> B: 10% </p>
+              <p> C: 10% </p>
+              <p> D: 0% </p>
             </div>
           </div>
         </Tile>
