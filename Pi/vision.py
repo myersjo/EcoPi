@@ -49,7 +49,7 @@ def countBacteria(img, pos):
     retVal, threshImg = cv.threshold(greyImg, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     
-    contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    d, contours, hierarchy = cv.findContours(threshImg, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
    
     jsonList = []
     jsonList,bacteriaPercentage, numbRegions=parseContours(hierarchy, contours, greyImg)

@@ -15,7 +15,7 @@ import { Line } from 'rc-progress';
 //Temporary graph images
 import ProgressBarSvg from './../../../assets/placeholder-graphs/progress-bar.svg';
 
-import PetriDish from './../../../assets/petriDish.png';
+import PetriDish from './../../../assets/picture.jpg';
 import snapshotDummyData from './../../../assets/snapshot.json';
 
 //Globals

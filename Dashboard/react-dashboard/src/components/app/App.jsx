@@ -99,7 +99,7 @@ class App extends Component {
       timestampPrint(`   Temperature: ${this.state.reading.humidity}`);
     });
     //Doublecheck this is necessary -------
-    var interval = { interval: 10000 };
+    var interval = { interval: 20000 };
     this.state.socket.emit('start_incubation', interval);
   }
 
