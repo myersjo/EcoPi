@@ -202,14 +202,14 @@ class IncubationInProgressScreen extends Component {
   }
   componentDidMount() {
     setInterval(() => {
-      let newTemp = updateTemp(data1[0].data[0].y);
+      let newTemp = updateTemp(data1[0].data[data1[0].data.length - 1].y);
       this.setState({
         completion:
           ((Date.now() - this.state.startUnix) / this.state.incubationLength) *
           100,
         currentTemp: newTemp
       });
-    }, 10000);
+    }, 1000);
   } //Update every 10s
 
   //   console.log("TEST");
