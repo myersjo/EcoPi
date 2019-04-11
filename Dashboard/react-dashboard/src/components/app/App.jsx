@@ -12,6 +12,7 @@ import IncubationInProgressScreen from './../screens/incubationInProgressScreen/
 import UploadScreen from './../screens/uploadScreen/UploadScreen.jsx';
 import LivestreamScreen from '../screens/livestreamScreen/LivestreamScreen.jsx';
 import LogScreen from './../screens/logScreen/LogScreen.jsx';
+import ReportScreen from './../screens/reportScreen/ReportScreen.jsx';
 
 import snapshotDummyData from './../../assets/snapshot.json';
 import snapshotDummyData1 from './../../assets/snapshot1.json';
@@ -42,7 +43,14 @@ class App extends Component {
     reading: {},
     snapshot: snapshotDummyData1,
     socket: openSocket(HOST + ':' + PORT + NAMESPACE),
-    snapshotHistory: [snapshotDummyData1, snapshotDummyData2, snapshotDummyData3, snapshotDummyData4, snapshotDummyData5, snapshotDummyData6], // holds up to the last 6 snapshot values. Starts with none and grows
+    snapshotHistory: [
+      snapshotDummyData1,
+      snapshotDummyData2,
+      snapshotDummyData3,
+      snapshotDummyData4,
+      snapshotDummyData5,
+      snapshotDummyData6
+    ], // holds up to the last 6 snapshot values. Starts with none and grows
 
     // Incubation setting defaults:
     incInProgress: false,
@@ -166,7 +174,7 @@ class App extends Component {
               photoInterval={photoInterval}
               snapshotHistory={this.state.snapshotHistory}
             />
-            <Screen>Screen 5</Screen>
+            <ReportScreen />
           </SwipeableViews>
         </Dashboard>
       </div>
