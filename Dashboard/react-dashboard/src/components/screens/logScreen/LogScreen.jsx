@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../Tile/Tile';
+import Tile from '../../tile/Tile';
 import StyledButton from './../../styledButton/StyledButton.jsx';
 import Info from './../../../assets/icons/info.svg';
 import PetriDish from './../../../assets/petriDish.png';
@@ -560,18 +560,25 @@ class LogScreen extends Component {
               className="three-col-info"
               style={{ justifyContent: 'left', alignItems: 'left' }}
             >
-
               <p className="tile-label">Percentage Of Bacteria (A):</p>
-              <span className="bacteria">{Math.floor(this.state.currentA * 100) / 100}%</span>
+              <span className="bacteria">
+                {Math.floor(this.state.currentA * 100) / 100}%
+              </span>
               <div style={{ padding: '0.25em 0 0.25em 0' }}> </div>
               <p className="tile-label">Percentage Of Bacteria (B):</p>
-              <span className="bacteria">{Math.floor(this.state.currentB * 100) / 100}%</span>
+              <span className="bacteria">
+                {Math.floor(this.state.currentB * 100) / 100}%
+              </span>
               <div style={{ padding: '0.25em 0 0.25em 0' }}> </div>
               <p className="tile-label">Percentage Of Bacteria (C):</p>
-              <span className="bacteria">{Math.floor(this.state.currentC * 100) / 100}%</span>
+              <span className="bacteria">
+                {Math.floor(this.state.currentC * 100) / 100}%
+              </span>
               <div style={{ padding: '0.25em 0 0.25em 0' }}> </div>
               <p className="tile-label">Percentage Of Bacteria (D):</p>
-              <span className="bacteria">{Math.floor(this.state.currentD * 100) / 100}%</span>
+              <span className="bacteria">
+                {Math.floor(this.state.currentD * 100) / 100}%
+              </span>
             </div>
             <div
               className="three-col-info"

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Screen from '../../screen/Screen.jsx';
-import Tile from '../../Tile/Tile';
+import Tile from '../../tile/Tile';
 import FormInput from './../../formInput/FormInput.jsx';
 import StyledButton from './../../styledButton/StyledButton.jsx';
 import Gallery from './../../../assets/icons/gallery.svg';
@@ -93,6 +93,7 @@ function updateTemp(temp) {
     temp += 0.1 / 60;
   }
   return Math.round(temp * 100) / 100;
+  // return temp.toFixed(2);
 }
 
 // Renderer callback with condition
@@ -188,6 +189,9 @@ class IncubationInProgressScreen extends Component {
       totalPhotoCount: Math.floor(incubationLength / photoInterval),
 
       temperatureData: data1,
+      currentTemp: 22,
+      highTemp: -99.0,
+      lowTemp: 99.0,
       axesData: axes,
       bacPerA: snapshotOne.image_analysis[0].BacteriaPercentage,
       bacPerB: snapshotOne.image_analysis[1].BacteriaPercentage,
@@ -202,7 +206,19 @@ class IncubationInProgressScreen extends Component {
   }
   componentDidMount() {
     setInterval(() => {
-      let newTemp = updateTemp(data1[0].data[data1[0].data.length - 1].y);
+      if (this.state.currentTemp < this.state.lowTemp) {
+        this.setState({
+          lowTemp: this.state.currentTemp
+        });
+      }
+      if (this.state.currentTemp > this.state.highTemp) {
+        this.setState({
+          highTemp: this.state.currentTemp
+        });
+      }
+      // let newTemp = updateTemp(data1[0].data[data1[0].data.length - 1].y);
+
+      let newTemp = updateTemp(this.state.currentTemp);
       this.setState({
         completion:
           ((Date.now() - this.state.startUnix) / this.state.incubationLength) *
@@ -408,15 +424,21 @@ class IncubationInProgressScreen extends Component {
               }}
             >
               <p className="tile-label">Current:</p>
-              <span className="large-digit">{this.state.currentTemp}</span>
+              <span className="large-digit">
+                {this.state.currentTemp.toFixed(2)}
+              </span>
               <div style={{ display: 'flex' }}>
                 <div className="small-readout">
                   <p className="tile-label">High:</p>
-                  <span className="medium-digit">{38}</span>
+                  <span className="medium-digit">
+                    {this.state.highTemp.toFixed(2)}
+                  </span>
                 </div>
                 <div className="small-readout">
                   <p className="tile-label">Low:</p>
-                  <span className="medium-digit">{15}</span>
+                  <span className="medium-digit">
+                    {this.state.lowTemp.toFixed(2)}
+                  </span>
                 </div>
               </div>
             </div>
